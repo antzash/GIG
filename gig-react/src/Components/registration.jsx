@@ -27,22 +27,24 @@ function RegistrationForm() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-6">
-          <img src="path/to/your/logo.png" alt="Logo" className="h-12" />
+          <img src="../gig-logo.png" alt="Logo" className="h-12 mb-10" />
         </div>
         <form
           onSubmit={handleSubmit}
-          className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+          className="bg-white rounded px-8 pt-6 pb-8 mb-4"
         >
-          <h2 className="text-center font-bold text-xl mb-5">Register</h2>
+          <h2 className="text-center font-bold font-avenir text-bold text-xl mb-5">
+            Register
+          </h2>
           <div className="mb-4">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="font-bold font-avenir text-bold text-l mb-5"
               htmlFor="username"
             >
-              Username:
+              Username
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -55,10 +57,10 @@ function RegistrationForm() {
           </div>
           <div className="mb-6">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="font-bold font-avenir text-bold text-l mb-5"
               htmlFor="password"
             >
-              Password:
+              Password
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
@@ -71,10 +73,10 @@ function RegistrationForm() {
           </div>
           <div className="mb-6">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="font-bold font-avenir text-bold text-l mb-5"
               htmlFor="role"
             >
-              Role:
+              Role
             </label>
             <select
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
@@ -88,7 +90,7 @@ function RegistrationForm() {
           </div>
           <div className="flex items-center justify-between">
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-amber-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
               Register
