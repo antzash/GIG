@@ -3,6 +3,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import LoginForm from "./Components/Login";
 import RegistrationForm from "./Components/Registration";
+import "./tailwind.css";
 
 function App() {
   return (
