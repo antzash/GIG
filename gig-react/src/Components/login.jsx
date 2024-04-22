@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 function LoginForm() {
   const [username, setUsername] = useState("");
@@ -73,13 +74,18 @@ function LoginForm() {
           </div>
           <div className="flex items-center justify-between">
             <button
-              className="bg-amber-400 hover:bg-cyan-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-amber-400 hover:bg-cyan-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline items-center"
               type="submit"
             >
               Login
             </button>
           </div>
         </form>
+        <div className="flex justify-center mt-4">
+          <Link to="/register" className="text-black font-avenir py-2 px-4">
+            Not registered ? Create your account here
+          </Link>
+        </div>
       </div>
     </div>
   );

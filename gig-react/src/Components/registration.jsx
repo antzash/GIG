@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 function RegistrationForm() {
   const [username, setUsername] = useState("");
@@ -97,6 +98,14 @@ function RegistrationForm() {
             </button>
           </div>
         </form>
+        <div className="flex justify-center mt-4">
+          <Link
+            to="/login"
+            className="text-black font-avenir py-2 px-4 rounded"
+          >
+            Already have an account ? Sign in here
+          </Link>
+        </div>
       </div>
     </div>
   );

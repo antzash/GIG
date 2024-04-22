@@ -1,6 +1,5 @@
-// src/App.jsx
 import React from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import LoginForm from "./Components/Login";
 import RegistrationForm from "./Components/Registration";
 import "./tailwind.css";
@@ -8,14 +7,11 @@ import "./tailwind.css";
 function App() {
   return (
     <Router>
-      <div>
-        <Routes>
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/register" element={<RegistrationForm />} />
-          <Route path="/" element={<LoginForm />} />{" "}
-          {/* Default route to LoginForm */}
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/register" element={<RegistrationForm />} />
+        <Route path="/" element={<LoginForm />} />
+      </Routes>
     </Router>
   );
 }
