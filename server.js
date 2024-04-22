@@ -5,11 +5,19 @@ const bodyParser = require("body-parser");
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+const { Pool } = require("pg");
+const pool = new Pool({
+  connectionString: "postgres://antzash:0420@localhost:5432/gigbase",
+});
+
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get("/", (req, res) => {
-  res.send("Hello World");
+app.get("/", async (req, res) => {
+  const client = await pool.connect();
+  const { rows } = await client.query("SELECT NOW()");
+  client.release();
+  res.send(rows[0]);
 });
 
 app.listen(PORT, () => {
