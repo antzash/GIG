@@ -1,20 +1,23 @@
 const express = require("express");
 const cors = require("cors");
-const bodyParser = require("body-parser");
 const app = express();
 const PORT = process.env.PORT || 5001;
+
+// Body parsing middleware setup
+app.use(express.json()); // for parsing application/json
+app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
+// CORS middleware
+app.use(cors());
+
 const { Pool } = require("pg");
 const pool = new Pool({
   connectionString: "postgres://antzash:0420@localhost:5432/gigbase",
 });
+
 // Import auth router
 const authRouter = require("./Routers/auth-routers");
-
-// Use the router variable
 app.use("/api/auth", authRouter);
-
-app.use(cors());
-app.use(bodyParser.json());
 
 app.get("/", async (req, res) => {
   const client = await pool.connect();
