@@ -32,17 +32,24 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
   try {
-    // Find the user by username
-    // Example: const user = await User.findOne({ where: { username } });
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const token = jwt.sign({ userId: user.id }, "your_jwt_secret", {
-        expiresIn: "1h",
-      });
-      res.json({ token });
+    const query = "SELECT * FROM users WHERE username = $1";
+    const { rows } = await pool.query(query, [username]);
+
+    if (rows.length > 0) {
+      const user = rows[0];
+      if (await bcrypt.compare(password, user.password)) {
+        const token = jwt.sign({ userId: user.id }, "your_jwt_secret", {
+          expiresIn: "1h",
+        });
+        res.json({ token });
+      } else {
+        res.status(401).send("Invalid credentials");
+      }
     } else {
-      res.status(401).send("Invalid credentials");
+      res.status(404).send("User not found");
     }
   } catch (error) {
+    console.error("Login error:", error);
     res.status(500).send("Server error");
   }
 });
