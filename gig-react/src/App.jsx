@@ -9,12 +9,6 @@ function App() {
   return (
     <Router>
       <div>
-        <nav style={{ marginBottom: "20px" }}>
-          <Link to="/login" style={{ marginRight: "10px" }}>
-            Login
-          </Link>
-          <Link to="/register">Register</Link>
-        </nav>
         <Routes>
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegistrationForm />} />
