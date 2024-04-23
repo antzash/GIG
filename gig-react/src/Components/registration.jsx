@@ -4,21 +4,38 @@ import { Link } from "react-router-dom";
 function RegistrationForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("artist"); // Defaulting to 'artist'
+  const [role, setRole] = useState("artist");
+  const [bandName, setBandName] = useState(""); // Specific to artists
+  const [genre, setGenre] = useState(""); // Specific to artists
+  const [artistBio, setArtistBio] = useState(""); // Specific to artists
+  const [venueName, setVenueName] = useState(""); // Specific to venues
+  const [address, setAddress] = useState(""); // Specific to venues
+  const [venueBio, setVenueBio] = useState(""); // Specific to venues
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const userDetails = {
+      username,
+      password,
+      role,
+      ...(role === "artist" && { bandName, genre, bio: artistBio }),
+      ...(role === "venue" && {
+        venueName,
+        address,
+        bio: venueBio,
+      }),
+    };
     try {
       const response = await fetch("http://localhost:5001/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password, role }),
+        body: JSON.stringify(userDetails),
       });
       if (response.ok) {
         console.log("User registered successfully");
-        // Additional actions upon successful registration like redirection or clearing the form
+        console.log("Sending registration data:", userDetails);
       } else {
         console.error("Failed to register");
       }
@@ -40,9 +57,10 @@ function RegistrationForm() {
           <h2 className="text-center font-bold font-avenir text-bold text-xl mb-5">
             Register
           </h2>
+          {/* Username and Password Fields */}
           <div className="mb-4">
             <label
-              className="font-bold font-avenir text-bold text-l mb-5"
+              className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="username"
             >
               Username
@@ -51,14 +69,15 @@ function RegistrationForm() {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="username"
               type="text"
+              placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
             />
           </div>
-          <div className="mb-6">
+          <div className="mb-4">
             <label
-              className="font-bold font-avenir text-bold text-l mb-5"
+              className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="password"
             >
               Password
@@ -67,20 +86,21 @@ function RegistrationForm() {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               id="password"
               type="password"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
-          <div className="mb-6">
+          <div className="mb-4">
             <label
-              className="font-bold font-avenir text-bold text-l mb-5"
+              className="block text-gray-700 text-sm font-bold mb-2"
               htmlFor="role"
             >
               Role
             </label>
             <select
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
               id="role"
               value={role}
               onChange={(e) => setRole(e.target.value)}
@@ -89,6 +109,109 @@ function RegistrationForm() {
               <option value="venue">Venue</option>
             </select>
           </div>
+          {/* Conditional Inputs Based on Role */}
+          {role === "artist" && (
+            <>
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="bandName"
+                >
+                  Band Name
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="bandName"
+                  type="text"
+                  placeholder="Band Name"
+                  value={bandName}
+                  onChange={(e) => setBandName(e.target.value)}
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="genre"
+                >
+                  Genre
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="genre"
+                  type="text"
+                  placeholder="Genre"
+                  value={genre}
+                  onChange={(e) => setGenre(e.target.value)}
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="artistBio"
+                >
+                  Bio
+                </label>
+                <textarea
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="artistBio"
+                  placeholder="Artist Bio"
+                  value={artistBio}
+                  onChange={(e) => setArtistBio(e.target.value)}
+                />
+              </div>
+            </>
+          )}
+          {role === "venue" && (
+            <>
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="venueName"
+                >
+                  Venue Name
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="venueName"
+                  type="text"
+                  placeholder="Venue Name"
+                  value={venueName}
+                  onChange={(e) => setVenueName(e.target.value)}
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="venueAddress"
+                >
+                  Venue Address
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="address"
+                  type="text"
+                  placeholder="Venue Address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="venueBio"
+                >
+                  Bio
+                </label>
+                <textarea
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="venueBio"
+                  placeholder="Venue Bio"
+                  value={venueBio}
+                  onChange={(e) => setVenueBio(e.target.value)}
+                />
+              </div>
+            </>
+          )}
           <div className="flex items-center justify-between">
             <button
               className="bg-amber-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -103,7 +226,7 @@ function RegistrationForm() {
             to="/login"
             className="text-black font-avenir py-2 px-4 rounded"
           >
-            Already have an account ? Sign in here
+            Already have an account? Sign in here
           </Link>
         </div>
       </div>

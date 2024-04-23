@@ -9,24 +9,56 @@ const pool = new Pool({
 });
 
 // POST /register
-router.post("/register/basic", async (req, res) => {
-  const { username, password, role } = req.body;
+router.post("/register", async (req, res) => {
+  const { username, password, role, bandName, genre, bio, venueName, address } =
+    req.body;
+
+  if (!username || !password || !role) {
+    return res.status(400).send("All fields are required");
+  }
+
+  const client = await pool.connect();
+
   try {
+    await client.query("BEGIN"); // Start transaction
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    const result = await pool.query(
+    const userResult = await client.query(
       "INSERT INTO users (username, password, role) VALUES ($1, $2, $3) RETURNING id",
       [username, hashedPassword, role]
     );
-    res.status(201).json({ userId: result.rows[0].id, role: role });
+    const userId = userResult.rows[0].id;
+
+    if (role === "artist" && bandName && genre && bio) {
+      await client.query(
+        "INSERT INTO artist_details (user_id, band_name, genre, bio) VALUES ($1, $2, $3, $4)",
+        [userId, bandName, genre, bio]
+      );
+    } else if (role === "venue" && venueName && address && bio) {
+      await client.query(
+        "INSERT INTO venue_details (user_id, venue_name, address, bio) VALUES ($1, $2, $3, $4)",
+        [userId, venueName, address, bio]
+      );
+    }
+
+    await client.query("COMMIT"); // Commit transaction
+    res.status(201).json({ userId: userId, role: role });
   } catch (error) {
-    console.error("Basic registration error:", error);
+    await client.query("ROLLBACK"); // Rollback transaction on error
+    console.error("Registration error:", error);
     res.status(500).send("Server error");
+  } finally {
+    client.release(); // Release client back to pool
   }
 });
 
 // POST /login
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).send("Username and password are required.");
+  }
+
   try {
     const query = "SELECT * FROM users WHERE username = $1";
     const { rows } = await pool.query(query, [username]);
@@ -34,10 +66,11 @@ router.post("/login", async (req, res) => {
     if (rows.length > 0) {
       const user = rows[0];
       if (await bcrypt.compare(password, user.password)) {
-        const token = jwt.sign({ userId: user.id }, "your_jwt_secret", {
+        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
           expiresIn: "1h",
+          issuer: "yourDomain.com",
         });
-        res.json({ token });
+        res.json({ token, userId: user.id, role: user.role }); // Optionally return more user info
       } else {
         res.status(401).send("Invalid credentials");
       }
@@ -46,38 +79,6 @@ router.post("/login", async (req, res) => {
     }
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).send("Server error");
-  }
-});
-
-// Routes to register artist details
-
-router.post("/register/artist/details", async (req, res) => {
-  const { userId, artistName, genre, bio, bandMembers } = req.body;
-  try {
-    const result = await pool.query(
-      "INSERT INTO artist_details (user_id, artist_name, genre, bio, band_members) VALUES ($1, $2, $3, $4, $5)",
-      [userId, artistName, genre, bio, JSON.stringify(bandMembers)]
-    );
-    res.status(201).send("Artist details added successfully.");
-  } catch (error) {
-    console.error("Artist details registration error:", error);
-    res.status(500).send("Server error");
-  }
-});
-
-// Routes to register Venue Details
-
-router.post("/register/venue/details", async (req, res) => {
-  const { userId, venueName, location, website, address, bio } = req.body;
-  try {
-    const result = await pool.query(
-      "INSERT INTO venue_details (user_id, venue_name, location, website, address, bio) VALUES ($1, $2, $3, $4, $5, $6)",
-      [userId, venueName, location, website, address, bio]
-    );
-    res.status(201).send("Venue details added successfully.");
-  } catch (error) {
-    console.error("Venue details registration error:", error);
     res.status(500).send("Server error");
   }
 });
