@@ -1,25 +1,26 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../Context/UserContext"; // Import useUser hook
 
 function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // Import and use useNavigate
+  const navigate = useNavigate();
+  const { updateUser } = useUser(); // Use the updateUser function from UserContext
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const response = await fetch("http://localhost:5001/api/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
       if (response.ok) {
         const data = await response.json();
         console.log("Login successful", data);
-        // Assuming you store the token and userId in the UserContext upon successful login
+        // Update the user state with the userId and token
+        updateUser({ userId: data.userId, token: data.token });
         // Redirect to the profile page
         navigate("/profile");
       } else {

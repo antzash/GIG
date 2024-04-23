@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 const UserContext = createContext({
   user: {},
   fetchUserProfile: () => {},
+  updateUser: () => {}, // Add updateUser to the context
 });
 
 export const UserProvider = ({ children }) => {
@@ -17,7 +18,7 @@ export const UserProvider = ({ children }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:5001/api/user/profile/:userId`,
+        `http://localhost:5001/api/user/profile/${user.userId}`,
         {
           method: "GET",
           headers: {
@@ -26,15 +27,19 @@ export const UserProvider = ({ children }) => {
           },
         }
       );
-      if (response.ok) {
-        const data = await response.json();
-        setUser((prevUser) => ({ ...prevUser, ...data })); // Merge the existing user state with the fetched profile data
-      } else {
-        console.error("Failed to fetch user profile");
+      if (!response.ok) {
+        throw new Error("Failed to fetch user profile");
       }
+      const data = await response.json();
+      setUser((prevUser) => ({ ...prevUser, ...data })); // Merge the existing user state with the fetched profile data
     } catch (error) {
       console.error("Error fetching user profile:", error);
     }
+  };
+
+  // Function to update the user state
+  const updateUser = (newUser) => {
+    setUser(newUser);
   };
 
   // Automatically fetch user profile on component mount
@@ -43,7 +48,7 @@ export const UserProvider = ({ children }) => {
   }, [user]); // Depend on the user state to re-fetch if the user ID or token changes
 
   return (
-    <UserContext.Provider value={{ user, fetchUserProfile }}>
+    <UserContext.Provider value={{ user, fetchUserProfile, updateUser }}>
       {children}
     </UserContext.Provider>
   );
