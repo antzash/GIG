@@ -83,4 +83,38 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Endpoint to get user profile
+router.get("/user/profile/:userId", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    // Assuming you have a role column in your users table
+    const userResult = await pool.query("SELECT * FROM users WHERE id = $1", [
+      userId,
+    ]);
+    if (userResult.rows.length === 0) {
+      return res.status(404).send("User not found");
+    }
+
+    const user = userResult.rows[0];
+    if (user.role === "artist") {
+      const details = await pool.query(
+        "SELECT * FROM artist_details WHERE user_id = $1",
+        [userId]
+      );
+      return res.json({ ...user, details: details.rows[0] });
+    } else if (user.role === "venue") {
+      const details = await pool.query(
+        "SELECT * FROM venue_details WHERE user_id = $1",
+        [userId]
+      );
+      return res.json({ ...user, details: details.rows[0] });
+    } else {
+      return res.json(user); // Just return basic user details if no specific role data
+    }
+  } catch (err) {
+    console.error("Error fetching user profile:", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 module.exports = router;

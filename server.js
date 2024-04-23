@@ -18,7 +18,7 @@ const pool = new Pool({
 
 // Import auth router
 const authRouter = require("./Routers/auth-routers");
-app.use("/api/auth", authRouter);
+app.use("/api", authRouter);
 
 app.get("/", async (req, res) => {
   const client = await pool.connect();

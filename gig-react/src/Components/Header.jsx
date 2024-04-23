@@ -1,37 +1,23 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-const Header = ({ userRole }) => {
-  const headerStyle = {
-    display: "flex",
-    alignItems: "center",
-    padding: "10px",
-  };
-
-  const logoStyle = {
-    height: "50px", // Adjust size as needed
-  };
-
-  const verticalLineStyle = {
-    width: "1px",
-    backgroundColor: "#333",
-    height: "30px",
-    margin: "0 20px",
-  };
-
-  const userInfoStyle = {
-    fontSize: "16px",
-    color: "#333",
-  };
-
+function Header({ username }) {
   return (
-    <div style={headerStyle}>
-      <img src="/path-to-your-logo.png" alt="Logo" style={logoStyle} />
-      <div style={verticalLineStyle}></div>
-      <div style={userInfoStyle}>
-        You have logged in as <strong>{userRole}</strong>
+    <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
+      <h1 className="text-lg font-bold">Gig Finder</h1>
+      <div>
+        <span>Welcome, {username}</span>
+        <nav className="ml-4 inline">
+          <Link to="/" className="text-white mr-4">
+            Home
+          </Link>
+          <Link to="/profile" className="text-white">
+            Profile
+          </Link>
+        </nav>
       </div>
-    </div>
+    </header>
   );
-};
+}
 
 export default Header;

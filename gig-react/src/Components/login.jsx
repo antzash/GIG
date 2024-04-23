@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // Import and use useNavigate
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch("http://localhost:5001/api/auth/login", {
+      const response = await fetch("http://localhost:5001/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -18,7 +19,9 @@ function LoginForm() {
       if (response.ok) {
         const data = await response.json();
         console.log("Login successful", data);
-        // Additional actions upon successful login like storing the token and redirecting the user
+        // Assuming you store the token and userId in the UserContext upon successful login
+        // Redirect to the profile page
+        navigate("/profile");
       } else {
         console.error("Failed to login");
       }
