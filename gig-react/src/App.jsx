@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import LoginForm from "./Components/login";
+import LoginForm from "./Components/Login";
 import RegistrationForm from "./Components/Registration";
 import ProfilePage from "./Pages/Profile"; // Import the ProfilePage component
 import { UserProvider } from "./Context/UserContext"; // Import the UserProvider
