@@ -9,7 +9,7 @@ const pool = new Pool({
 });
 
 // POST /register
-router.post("/register", async (req, res) => {
+router.post("/register/basic", async (req, res) => {
   const { username, password, role } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -17,13 +17,9 @@ router.post("/register", async (req, res) => {
       "INSERT INTO users (username, password, role) VALUES ($1, $2, $3) RETURNING id",
       [username, hashedPassword, role]
     );
-    if (result.rows.length > 0) {
-      res.status(201).send("User registered");
-    } else {
-      res.status(400).send("User not registered");
-    }
+    res.status(201).json({ userId: result.rows[0].id, role: role });
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error("Basic registration error:", error);
     res.status(500).send("Server error");
   }
 });
@@ -50,6 +46,38 @@ router.post("/login", async (req, res) => {
     }
   } catch (error) {
     console.error("Login error:", error);
+    res.status(500).send("Server error");
+  }
+});
+
+// Routes to register artist details
+
+router.post("/register/artist/details", async (req, res) => {
+  const { userId, artistName, genre, bio, bandMembers } = req.body;
+  try {
+    const result = await pool.query(
+      "INSERT INTO artist_details (user_id, artist_name, genre, bio, band_members) VALUES ($1, $2, $3, $4, $5)",
+      [userId, artistName, genre, bio, JSON.stringify(bandMembers)]
+    );
+    res.status(201).send("Artist details added successfully.");
+  } catch (error) {
+    console.error("Artist details registration error:", error);
+    res.status(500).send("Server error");
+  }
+});
+
+// Routes to register Venue Details
+
+router.post("/register/venue/details", async (req, res) => {
+  const { userId, venueName, location, website, address, bio } = req.body;
+  try {
+    const result = await pool.query(
+      "INSERT INTO venue_details (user_id, venue_name, location, website, address, bio) VALUES ($1, $2, $3, $4, $5, $6)",
+      [userId, venueName, location, website, address, bio]
+    );
+    res.status(201).send("Venue details added successfully.");
+  } catch (error) {
+    console.error("Venue details registration error:", error);
     res.status(500).send("Server error");
   }
 });
