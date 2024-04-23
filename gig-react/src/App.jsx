@@ -10,13 +10,11 @@ function App() {
   return (
     <UserProvider>
       {" "}
-      {/* Wrap your application with the UserProvider */}
       <Router>
         <Routes>
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegistrationForm />} />
           <Route path="/profile" element={<ProfilePage />} />{" "}
-          {/* Add this line */}
           <Route path="/" element={<LoginForm />} />
         </Routes>
       </Router>

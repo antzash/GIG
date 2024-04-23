@@ -1,8 +1,15 @@
 import React, { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useUser } from "../Context/UserContext";
 
 function ProfilePage() {
-  const { user } = useUser();
+  const { user, logoutUser } = useUser(); // Access the user and logoutUser function
+  const navigate = useNavigate(); // Hook for navigation
+
+  const handleLogout = () => {
+    logoutUser(); // Call the logoutUser function when the button is clicked
+    navigate("/login"); // Redirect the user to the login page
+  };
 
   return (
     <div className="p-4">
@@ -39,6 +46,12 @@ function ProfilePage() {
           <p>No profile details available.</p>
         )}
       </div>
+      <button
+        onClick={handleLogout}
+        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Logout
+      </button>
     </div>
   );
 }

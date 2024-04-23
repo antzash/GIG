@@ -7,12 +7,15 @@ const UserContext = createContext({
 });
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(() => {
+    // Load user information from localStorage on initialization
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : {};
+  });
 
   // Function to fetch user profile
   const fetchUserProfile = async () => {
     if (!user.userId || !user.token) {
-      console.error("User ID or token not available");
       return;
     }
 
@@ -40,6 +43,8 @@ export const UserProvider = ({ children }) => {
   // Function to update the user state
   const updateUser = (newUser) => {
     setUser(newUser);
+    // Store the user's information in localStorage
+    localStorage.setItem("user", JSON.stringify(newUser));
   };
 
   // Automatically fetch user profile on component mount
@@ -47,8 +52,17 @@ export const UserProvider = ({ children }) => {
     fetchUserProfile();
   }, [user]); // Depend on the user state to re-fetch if the user ID or token changes
 
+  // Function to log out the user
+  const logoutUser = () => {
+    setUser({});
+    // Clear the user's information from localStorage
+    localStorage.removeItem("user");
+  };
+
   return (
-    <UserContext.Provider value={{ user, fetchUserProfile, updateUser }}>
+    <UserContext.Provider
+      value={{ user, fetchUserProfile, updateUser, logoutUser }}
+    >
       {children}
     </UserContext.Provider>
   );
