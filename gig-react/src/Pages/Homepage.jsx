@@ -46,6 +46,7 @@ const HomePage = () => {
               <th className="px-4 py-2">Date</th>
               <th className="px-4 py-2">Time</th>
               <th className="px-4 py-2">Pay</th>
+              <th className="px-4 py-2">Accepted By</th>
             </tr>
           </thead>
           <tbody>
@@ -57,6 +58,7 @@ const HomePage = () => {
                 <td className="border px-4 py-2">{gig.date}</td>
                 <td className="border px-4 py-2">{gig.time}</td>
                 <td className="border px-4 py-2">{gig.pay}</td>
+                <td className="border px-4 py-2">{gig.accepted_by}</td>
               </tr>
             ))}
           </tbody>
