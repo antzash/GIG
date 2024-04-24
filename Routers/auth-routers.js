@@ -8,8 +8,10 @@ const pool = new Pool({
   connectionString: "postgres://antzash:0420@localhost:5432/gigbase",
 });
 
-const authenticateVenue = require("../Middleware/middleware");
-const authenticateArtist = require("../Middleware/middleware");
+const {
+  authenticateVenue,
+  authenticateArtist,
+} = require("../Middleware/middleware");
 
 // POST /register
 router.post("/register", async (req, res) => {
@@ -56,7 +58,7 @@ router.post("/register", async (req, res) => {
 });
 
 // POST /login
-router.post("/login", async (req, res) => {
+router.post("/login", authenticateArtist, async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).send("Username and password are required.");

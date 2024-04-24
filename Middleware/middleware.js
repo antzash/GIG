@@ -42,6 +42,4 @@ const authenticateArtist = (req, res, next) => {
   }
 };
 
-module.exports = authenticateArtist;
-
-module.exports = authenticateVenue;
+module.exports = { authenticateVenue, authenticateArtist };
