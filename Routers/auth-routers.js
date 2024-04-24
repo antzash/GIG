@@ -199,18 +199,34 @@ router.get("/gigs", async (req, res) => {
 // Accept Gigs as artists
 router.post("/gigs/accept/:gigId", authenticateArtist, async (req, res) => {
   const { gigId } = req.params;
+  const userId = req.user.userId; // Assuming authenticateArtist attaches the user details to req.user
+
   try {
-    const result = await pool.query(
-      `UPDATE gigs SET artist_id = $1 WHERE id = $2 AND artist_id IS NULL RETURNING *,
-       (SELECT band_name FROM artist_details WHERE user_id = $1) AS band_name`,
-      [req.user.userId, gigId]
+    // First, fetch the band_name of the artist who is logged in
+    const { rows: artistDetails } = await pool.query(
+      "SELECT band_name FROM artist_details WHERE user_id = $1",
+      [userId]
     );
-    if (result.rows.length === 0) {
+
+    if (artistDetails.length === 0) {
+      return res.status(400).send("Artist details not found.");
+    }
+
+    const bandName = artistDetails[0].band_name;
+
+    // Then, update the gig's accepted_by column with the band_name
+    const updateResult = await pool.query(
+      "UPDATE gigs SET accepted_by = $1 WHERE id = $2 AND accepted_by IS NULL",
+      [bandName, gigId]
+    );
+
+    if (updateResult.rowCount === 0) {
       return res
         .status(400)
         .send("Gig not available for acceptance or already accepted");
     }
-    res.json(result.rows[0]);
+
+    res.json({ message: "Gig accepted successfully", accepted_by: bandName });
   } catch (error) {
     console.error("Failed to accept gig:", error);
     res.status(500).send("Internal Server Error");
