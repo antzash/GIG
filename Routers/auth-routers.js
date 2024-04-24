@@ -120,18 +120,36 @@ router.get("/user/profile/:userId", async (req, res) => {
 
 // Endpoint to post gigs (as venue)
 router.post("/gigs", authenticateVenue, async (req, res) => {
-  const { title, description, date, pay } = req.body;
+  const { title, description, date, pay, time } = req.body;
+  const userId = req.user.userId; // Ensure this is correctly fetching the user_id from the authenticated user
+
+  if (!userId) {
+    return res.status(400).send("User ID is missing from the request.");
+  }
+
   try {
-    const result = await pool.query(
-      "INSERT INTO gigs (venue_id, title, description, date, pay) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [req.user.id, title, description, date, pay]
-    );
+    const query = `
+      INSERT INTO gigs (user_id, venue_name, title, description, date, pay, time)
+      VALUES ($1, (SELECT venue_name FROM venue_details WHERE user_id = $1), $2, $3, $4, $5, $6)
+      RETURNING *;
+    `;
+
+    const result = await pool.query(query, [
+      userId,
+      title,
+      description,
+      date,
+      pay,
+      time,
+    ]);
     res.status(201).json(result.rows[0]);
   } catch (error) {
-    console.error("Failed to post gig:", error);
-    res.status(500).send("Internal Server Error");
+    console.error("Error posting gig:", error);
+    res.status(500).send("Failed to post gig due to server error.");
   }
 });
+
+module.exports = router;
 
 // Endpoint to delete gigs (as venue)
 router.delete("/api/gigs/:gigId", authenticateVenue, async (req, res) => {
