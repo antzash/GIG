@@ -183,8 +183,8 @@ router.delete("/gigs/:gigId", authenticateVenue, async (req, res) => {
   }
 });
 
-// Allow artists to view gigs
-router.get("/api/gigs", async (req, res) => {
+// Allow artists and venues to view gigs
+router.get("/gigs", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM gigs");
     res.json(result.rows);

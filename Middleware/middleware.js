@@ -13,7 +13,6 @@ const authenticateVenue = (req, res, next) => {
       return res.status(403).send("Access denied. Not authorized.");
     }
 
-    console.log("Decoded JWT:", decoded); // Log to verify contents of decoded token
     req.user = decoded; // Add decoded token info to req.user
     next();
   } catch (error) {
@@ -23,23 +22,22 @@ const authenticateVenue = (req, res, next) => {
 };
 
 const authenticateArtist = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1]; // Assuming the token is sent as a Bearer token
-
-  if (!token) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).send("Access denied. No token provided.");
   }
 
+  const token = authHeader.split(" ")[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-
-    // Check if the user's role is 'artist'
-    if (req.user.role !== "artist") {
+    if (decoded.role !== "artist") {
       return res.status(403).send("Access denied. Not authorized.");
     }
 
+    req.user = decoded; // Add decoded token info to req.user
     next();
   } catch (error) {
+    console.error("Token Verification Error:", error);
     res.status(400).send("Invalid token.");
   }
 };
