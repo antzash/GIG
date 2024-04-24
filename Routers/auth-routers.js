@@ -149,26 +149,37 @@ router.post("/gigs", authenticateVenue, async (req, res) => {
   }
 });
 
-module.exports = router;
-
 // Endpoint to delete gigs (as venue)
-router.delete("/api/gigs/:gigId", authenticateVenue, async (req, res) => {
+router.delete("/gigs/:gigId", authenticateVenue, async (req, res) => {
   const { gigId } = req.params;
+  const userId = req.user.userId; // Assuming authenticateVenue attaches the user details to req.user
+
   try {
-    // verify the venue owns the gig
-    const gig = await pool.query(
-      "SELECT * FROM gigs WHERE id = $1 AND venue_id = $2",
-      [gigId, req.user.id]
+    // First, verify that the logged-in venue is the owner of the gig
+    const ownershipCheck = await pool.query(
+      "SELECT user_id FROM gigs WHERE id = $1",
+      [gigId]
     );
-    if (gig.rows.length === 0) {
-      return res.status(404).send("Gig not found or access denied");
+
+    if (ownershipCheck.rows.length === 0) {
+      return res.status(404).send("Gig not found.");
     }
 
-    await pool.query("DELETE FROM gigs WHERE id = $1", [gigId]);
-    res.status(200).send("Gig deleted successfully");
+    if (ownershipCheck.rows[0].user_id !== userId) {
+      return res
+        .status(403)
+        .send("Access denied. You can only delete gigs that you have posted.");
+    }
+
+    // If the user is verified as the owner, delete the gig
+    const deleteQuery = await pool.query("DELETE FROM gigs WHERE id = $1", [
+      gigId,
+    ]);
+
+    res.status(200).send("Gig deleted successfully.");
   } catch (error) {
-    console.error("Failed to delete gig:", error);
-    res.status(500).send("Internal Server Error");
+    console.error("Error deleting gig:", error);
+    res.status(500).send("Failed to delete gig due to server error.");
   }
 });
 
