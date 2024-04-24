@@ -9,6 +9,7 @@ const authenticateVenue = (req, res, next) => {
   const token = authHeader.split(" ")[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded JWT:", decoded);
     if (decoded.role !== "venue") {
       return res.status(403).send("Access denied. Not authorized.");
     }
@@ -30,6 +31,7 @@ const authenticateArtist = (req, res, next) => {
   const token = authHeader.split(" ")[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded JWT:", decoded);
     if (decoded.role !== "artist") {
       return res.status(403).send("Access denied. Not authorized.");
     }
