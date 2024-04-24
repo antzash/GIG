@@ -251,4 +251,57 @@ router.get("/user/profile/:userId/gigs", async (req, res) => {
 //   }
 // });
 
+// Offer gig to artist.
+router.post(
+  "/gigs/offer/:gigId/:artistId",
+  authenticateVenue,
+  async (req, res) => {
+    const { gigId, artistId } = req.params;
+    const userId = req.user.userId; // Assuming authenticateVenue attaches the user details to req.user
+
+    try {
+      // First, fetch the band_name of the artist who is being offered the gig
+      const { rows: artistDetails } = await pool.query(
+        "SELECT band_name FROM artist_details WHERE user_id = $1",
+        [artistId]
+      );
+
+      if (artistDetails.length === 0) {
+        return res.status(400).send("Artist details not found.");
+      }
+
+      const bandName = artistDetails[0].band_name;
+
+      // Check if the gig belongs to the venue making the offer
+      const gigCheck = await pool.query(
+        "SELECT 1 FROM gigs WHERE id = $1 AND user_id = $2",
+        [gigId, userId]
+      );
+
+      if (gigCheck.rows.length === 0) {
+        return res
+          .status(403)
+          .send("You can only offer gigs that you have created.");
+      }
+
+      // Then, update the gig's offered_to column with the band_name
+      const updateResult = await pool.query(
+        "UPDATE gigs SET offered_to = $1 WHERE id = $2 AND offered_to IS NULL",
+        [bandName, gigId]
+      );
+
+      if (updateResult.rowCount === 0) {
+        return res
+          .status(400)
+          .send("Gig not available for offer or already offered");
+      }
+
+      res.json({ message: "Gig offered successfully", offered_to: bandName });
+    } catch (error) {
+      console.error("Failed to offer gig:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  }
+);
+
 module.exports = router;
