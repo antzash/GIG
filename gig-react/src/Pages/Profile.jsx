@@ -162,7 +162,6 @@ function ProfilePage() {
       console.error("Error:", error);
     }
   };
-
   return (
     <div>
       <Header />
@@ -178,7 +177,6 @@ function ProfilePage() {
                   <th className="px-4 py-2">Date</th>
                   <th className="px-4 py-2">Time</th>
                   <th className="px-4 py-2">Pay</th>
-                  <th className="px-4 py-2">Accepted By</th>
                   <th className="px-4 py-2">Offered To</th>
                   <th className="px-4 py-2">Actions</th>
                 </tr>
@@ -191,7 +189,9 @@ function ProfilePage() {
                     <td className="border px-4 py-2">{gig.date}</td>
                     <td className="border px-4 py-2">{gig.time}</td>
                     <td className="border px-4 py-2">{gig.pay}</td>
-                    <td className="border px-4 py-2">{gig.accepted_by}</td>
+                    <td className="border px-4 py-2">
+                      {gig.offered_to ? gig.offered_to : "Not offered yet"}
+                    </td>
                     <td className="border px-4 py-2">
                       {gig.offered_to ? (
                         <button
@@ -231,14 +231,14 @@ function ProfilePage() {
                           >
                             Offer to
                           </button>
-                          <button
-                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                            onClick={() => deleteGig(gig.id)}
-                          >
-                            Delete
-                          </button>
                         </>
                       )}
+                      <button
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={() => deleteGig(gig.id)}
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}
