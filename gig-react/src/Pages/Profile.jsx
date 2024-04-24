@@ -1,4 +1,3 @@
-// src/Pages/Profile.jsx
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../Context/UserContext";
@@ -8,52 +7,95 @@ function ProfilePage() {
   const { user } = useUser();
   const navigate = useNavigate();
   const [gigs, setGigs] = useState([]);
+  const [artists, setArtists] = useState([]);
+  const [selectedArtist, setSelectedArtist] = useState(null);
+  const [offerMade, setOfferMade] = useState(false);
 
-  const fetchGigs = async () => {
+  useEffect(() => {
+    const fetchGigs = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5001/api/user/profile/${user.userId}/gigs`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch gigs");
+        }
+        const data = await response.json();
+        setGigs(data);
+      } catch (error) {
+        console.error("Error fetching gigs:", error);
+      }
+    };
+
+    const fetchArtists = async () => {
+      try {
+        const response = await fetch("http://localhost:5001/api/artists");
+        if (!response.ok) {
+          throw new Error("Failed to fetch artists");
+        }
+        const data = await response.json();
+        setArtists(data);
+      } catch (error) {
+        console.error("Error fetching artists:", error);
+      }
+    };
+
+    fetchGigs();
+    fetchArtists();
+  }, [user.userId, user.token]);
+
+  const offerGig = async (gigId) => {
+    if (!selectedArtist || !selectedArtist.user_id) {
+      console.error("No artist selected");
+      return;
+    }
+
     try {
       const response = await fetch(
-        `http://localhost:5001/api/user/profile/${user.userId}/gigs`,
+        `http://localhost:5001/api/gigs/offer/${gigId}/${selectedArtist.user_id}`,
         {
-          method: "GET",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${user.token}`,
           },
         }
       );
-      if (!response.ok) {
-        throw new Error("Failed to fetch gigs");
-      }
-      const data = await response.json();
-      if (data.length === 0) {
-        console.log("No gigs found for this user");
+      if (response.ok) {
+        console.log("Gig offered successfully");
+        setOfferMade(true);
       } else {
-        setGigs(data);
+        console.error("Failed to offer gig");
       }
     } catch (error) {
-      console.error("Error fetching gigs:", error);
+      console.error("Error:", error);
     }
   };
 
-  useEffect(() => {
-    fetchGigs();
-  }, [user.userId]); // Use user.userId as the dependency
-
-  const deleteGig = async (gigId) => {
+  const retractOffer = async (gigId) => {
     try {
-      const response = await fetch(`http://localhost:5001/api/gigs/${gigId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
+      const response = await fetch(
+        `http://localhost:5001/api/gigs/retract/${gigId}/${selectedArtist.user_id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
       if (response.ok) {
-        console.log("Gig deleted successfully");
-        // Filter out the deleted gig from the state
-        setGigs((prevGigs) => prevGigs.filter((gig) => gig.id !== gigId));
+        console.log("Offer retracted successfully");
+        setOfferMade(false);
       } else {
-        console.error("Failed to delete gig");
+        console.error("Failed to retract offer");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -87,12 +129,31 @@ function ProfilePage() {
                 <td className="border px-4 py-2">{gig.pay}</td>
                 <td className="border px-4 py-2">{gig.accepted_by}</td>
                 <td className="border px-4 py-2">
-                  <button
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={() => deleteGig(gig.id)}
+                  <select
+                    value={selectedArtist?.user_id || ""}
+                    onChange={(e) =>
+                      setSelectedArtist(
+                        artists.find(
+                          (artist) =>
+                            artist.user_id === parseInt(e.target.value)
+                        )
+                      )
+                    }
                   >
-                    Delete
-                  </button>
+                    <option value="">Select an artist</option>
+                    {artists.map((artist) => (
+                      <option key={artist.user_id} value={artist.user_id}>
+                        {artist.band_name}
+                      </option>
+                    ))}
+                  </select>
+                  {offerMade ? (
+                    <button onClick={() => retractOffer(gig.id)}>
+                      Retract Offer
+                    </button>
+                  ) : (
+                    <button onClick={() => offerGig(gig.id)}>Offer to</button>
+                  )}
                 </td>
               </tr>
             ))}
