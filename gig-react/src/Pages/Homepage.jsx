@@ -89,11 +89,7 @@ const HomePage = () => {
                       <td className="border px-4 py-2">{gig.pay}</td>
                       <td className="border px-4 py-2">{gig.accepted_by}</td>
                       <td className="border px-4 py-2">
-                        {user.role === "artist" && (
-                          <button onClick={() => acceptGig(gig.id)}>
-                            Accept
-                          </button>
-                        )}
+                        <button>Message</button>
                       </td>
                     </tr>
                   ))}
@@ -131,11 +127,7 @@ const HomePage = () => {
                       <td className="border px-4 py-2">{gig.pay}</td>
                       <td className="border px-4 py-2">{gig.accepted_by}</td>
                       <td className="border px-4 py-2">
-                        {gig.accepted_by === null && (
-                          <button onClick={() => acceptGig(gig.id)}>
-                            Accept
-                          </button>
-                        )}
+                        {gig.accepted_by === null && <button>Message</button>}
                       </td>
                     </tr>
                   ))}
