@@ -304,4 +304,47 @@ router.post(
   }
 );
 
+// Retract offer as venue
+router.post(
+  "/gigs/retract/:gigId/:artistId",
+  authenticateVenue,
+  async (req, res) => {
+    const { gigId, artistId } = req.params;
+    const userId = req.user.userId; // Assuming authenticateVenue attaches the user details to req.user
+
+    try {
+      // Check if the gig belongs to the venue making the retract request
+      const gigCheck = await pool.query(
+        "SELECT 1 FROM gigs WHERE id = $1 AND user_id = $2 AND offered_to IS NOT NULL",
+        [gigId, userId]
+      );
+
+      if (gigCheck.rows.length === 0) {
+        return res
+          .status(403)
+          .send("You can only retract offers that you have made.");
+      }
+
+      // Retract the offer by setting the offered_to column back to NULL
+      const updateResult = await pool.query(
+        "UPDATE gigs SET offered_to = NULL WHERE id = $1 AND offered_to IS NOT NULL",
+        [gigId]
+      );
+
+      if (updateResult.rowCount === 0) {
+        return res
+          .status(400)
+          .send(
+            "Failed to retract offer. The gig might not have an offer or the offer has already been retracted."
+          );
+      }
+
+      res.json({ message: "Offer retracted successfully" });
+    } catch (error) {
+      console.error("Failed to retract offer:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  }
+);
+
 module.exports = router;
