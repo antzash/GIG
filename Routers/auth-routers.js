@@ -361,4 +361,23 @@ router.get("/artists", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
+// Fetch offered gigs
+router.get("/gigs/offered", authenticateArtist, async (req, res) => {
+  try {
+    // Extract the user's ID from the request object
+    const userId = req.user.userId;
+
+    // Query to select gigs where the offered_to column matches the artist's band name
+    const result = await pool.query(
+      "SELECT * FROM gigs WHERE offered_to = (SELECT band_name FROM artist_details WHERE user_id = $1)",
+      [userId]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Failed to retrieve offered gigs:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 module.exports = router;
