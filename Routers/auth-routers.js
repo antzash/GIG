@@ -185,13 +185,31 @@ router.delete("/gigs/:gigId", authenticateVenue, async (req, res) => {
   }
 });
 
-// Allow artists and venues to view gigs
+// View All Gigs
 router.get("/gigs", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM gigs");
     res.json(result.rows);
   } catch (error) {
     console.error("Failed to retrieve gigs:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// View Gigs by Id (Venue)
+router.get("/user/profile/:userId/gigs", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const result = await pool.query("SELECT * FROM gigs WHERE user_id = $1", [
+      userId,
+    ]);
+    // Return an empty array with a 200 status code if no gigs are found
+    if (result.rows.length === 0) {
+      return res.status(200).json([]);
+    }
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching gigs by user ID:", error);
     res.status(500).send("Internal Server Error");
   }
 });
