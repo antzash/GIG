@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../Context/UserContext"; // Import useUser hook
+import gigLogo from "../gig-logo.png"; // Adjust the path as necessary
 
 function LoginForm() {
   const [username, setUsername] = useState("");
@@ -35,7 +36,7 @@ function LoginForm() {
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-6">
-          <img src="../gig-logo.png" alt="Logo" className="h-12 mb-10" />
+          <img src={gigLogo} alt="Gig Logo" className="h-12" />
         </div>
         <form
           onSubmit={handleSubmit}

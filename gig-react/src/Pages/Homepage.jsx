@@ -1,12 +1,10 @@
 import React from "react";
-import Header from "../Components/Header"; // Update the path according to your project structure
+import Header from "../Components/Header"; // Import the Header component
 
 const HomePage = () => {
-  const userRole = "artist"; // This should ideally come from user authentication data
-
   return (
     <div>
-      <Header userRole={userRole} />
+      <Header /> {/* Include the Header component here */}
       <h1>Welcome to the Home Page</h1>
       {/* Other content of your home page */}
     </div>
