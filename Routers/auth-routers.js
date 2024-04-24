@@ -347,4 +347,18 @@ router.post(
   }
 );
 
+// Fetch all artists
+router.get("/artists", async (req, res) => {
+  try {
+    // Query to select only the 'band_name' from the 'artist_details' table
+    const result = await pool.query("SELECT band_name FROM artist_details");
+    // Extract band names from the result rows
+    const bandNames = result.rows.map((row) => row.band_name);
+    res.json(bandNames);
+  } catch (error) {
+    console.error("Failed to retrieve artists:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 module.exports = router;
