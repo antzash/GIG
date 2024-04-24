@@ -9,10 +9,36 @@ function ProfilePage() {
   const [gigs, setGigs] = useState([]);
   const [artists, setArtists] = useState([]);
   const [selectedArtist, setSelectedArtist] = useState({});
-  const [offerMade, setOfferMade] = useState(false);
+  const [offeredGigs, setOfferedGigs] = useState([]); // State to hold gigs offered to the artist
 
   const isVenue = user.role === "venue";
   const isArtist = user.role === "artist";
+
+  const fetchOfferedGigs = async () => {
+    try {
+      const response = await fetch(`http://localhost:5001/api/gigs/offered`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch offered gigs");
+      }
+      const data = await response.json();
+      setOfferedGigs(data);
+    } catch (error) {
+      console.error("Error fetching offered gigs:", error);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch gigs offered to the artist if the user is an artist
+    if (isArtist) {
+      fetchOfferedGigs();
+    }
+  }, [user]);
 
   useEffect(() => {
     const fetchGigs = async () => {
@@ -141,27 +167,24 @@ function ProfilePage() {
     <div>
       <Header />
       <div className="p-4">
-        <h2 className="text-2xl font-bold mb-4">Your Gigs</h2>
-        <table className="table-auto w-full">
-          <thead>
-            <tr>
-              <th className="px-4 py-2">Title</th>
-              <th className="px-4 py-2">Description</th>
-              <th className="px-4 py-2">Date</th>
-              <th className="px-4 py-2">Time</th>
-              <th className="px-4 py-2">Pay</th>
-              <th className="px-4 py-2">Accepted By</th>
-              <th className="px-4 py-2">Offered To</th>
-              <th className="px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {gigs.map((gig) => {
-              if (isVenue) {
-                const artistOfferedTo = artists.find(
-                  (artist) => artist.band_name === gig.offered_to
-                );
-                return (
+        {isVenue && (
+          <>
+            <h2 className="text-2xl font-bold mb-4">Your Gigs</h2>
+            <table className="table-auto w-full">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2">Title</th>
+                  <th className="px-4 py-2">Description</th>
+                  <th className="px-4 py-2">Date</th>
+                  <th className="px-4 py-2">Time</th>
+                  <th className="px-4 py-2">Pay</th>
+                  <th className="px-4 py-2">Accepted By</th>
+                  <th className="px-4 py-2">Offered To</th>
+                  <th className="px-4 py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {gigs.map((gig) => (
                   <tr key={gig.id}>
                     <td className="border px-4 py-2">{gig.title}</td>
                     <td className="border px-4 py-2">{gig.description}</td>
@@ -169,11 +192,6 @@ function ProfilePage() {
                     <td className="border px-4 py-2">{gig.time}</td>
                     <td className="border px-4 py-2">{gig.pay}</td>
                     <td className="border px-4 py-2">{gig.accepted_by}</td>
-                    <td className="border px-4 py-2">
-                      {artistOfferedTo
-                        ? artistOfferedTo.band_name
-                        : "Not offered"}
-                    </td>
                     <td className="border px-4 py-2">
                       {gig.offered_to ? (
                         <button
@@ -223,30 +241,40 @@ function ProfilePage() {
                       )}
                     </td>
                   </tr>
-                );
-              } else if (isArtist) {
-                if (gig.offered_to === user.userId) {
-                  return (
-                    <tr key={gig.id}>
-                      <td className="border px-4 py-2">{gig.title}</td>
-                      <td className="border px-4 py-2">{gig.description}</td>
-                      <td className="border px-4 py-2">{gig.date}</td>
-                      <td className="border px-4 py-2">{gig.time}</td>
-                      <td className="border px-4 py-2">{gig.pay}</td>
-                      <td className="border px-4 py-2">{gig.accepted_by}</td>
-                      <td className="border px-4 py-2">{gig.offered_to}</td>
-                      <td className="border px-4 py-2">
-                        <button onClick={() => acceptGig(gig.id)}>
-                          Accept Gig
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                }
-              }
-            })}
-          </tbody>
-        </table>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+        {isArtist && (
+          <>
+            <h2 className="text-2xl font-bold mb-4">Gigs Offered to You</h2>
+            <table className="table-auto w-full">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2">Title</th>
+                  <th className="px-4 py-2">Description</th>
+                  <th className="px-4 py-2">Date</th>
+                  <th className="px-4 py-2">Time</th>
+                  <th className="px-4 py-2">Pay</th>
+                  <th className="px-4 py-2">Venue Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                {offeredGigs.map((gig) => (
+                  <tr key={gig.id}>
+                    <td className="border px-4 py-2">{gig.title}</td>
+                    <td className="border px-4 py-2">{gig.description}</td>
+                    <td className="border px-4 py-2">{gig.date}</td>
+                    <td className="border px-4 py-2">{gig.time}</td>
+                    <td className="border px-4 py-2">{gig.pay}</td>
+                    <td className="border px-4 py-2">{gig.venue_name}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
       </div>
     </div>
   );
