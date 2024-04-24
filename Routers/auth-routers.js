@@ -197,12 +197,13 @@ router.get("/gigs", async (req, res) => {
 });
 
 // Accept Gigs as artists
-router.post("/api/gigs/accept/:gigId", authenticateArtist, async (req, res) => {
+router.post("/gigs/accept/:gigId", authenticateArtist, async (req, res) => {
   const { gigId } = req.params;
   try {
     const result = await pool.query(
-      "UPDATE gigs SET artist_id = $1 WHERE id = $2 AND artist_id IS NULL RETURNING *",
-      [req.user.id, gigId]
+      `UPDATE gigs SET artist_id = $1 WHERE id = $2 AND artist_id IS NULL RETURNING *,
+       (SELECT band_name FROM artist_details WHERE user_id = $1) AS band_name`,
+      [req.user.userId, gigId]
     );
     if (result.rows.length === 0) {
       return res
