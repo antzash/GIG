@@ -65,14 +65,15 @@ function ProfilePage() {
   }, [user.userId, user.token]);
 
   const offerGig = async (gigId) => {
-    if (!selectedArtist || !selectedArtist.user_id) {
-      console.error("No artist selected");
+    // Check if an artist is selected for the specific gig
+    if (!selectedArtist[gigId] || !selectedArtist[gigId].user_id) {
+      console.error("No artist selected for this gig");
       return;
     }
 
     try {
       const response = await fetch(
-        `http://localhost:5001/api/gigs/offer/${gigId}/${selectedArtist.user_id}`,
+        `http://localhost:5001/api/gigs/offer/${gigId}/${selectedArtist[gigId].user_id}`,
         {
           method: "POST",
           headers: {
@@ -185,14 +186,15 @@ function ProfilePage() {
                         <>
                           <select
                             className="mr-2"
-                            value={selectedArtist?.user_id || ""}
+                            value={selectedArtist[gig.id]?.user_id || ""}
                             onChange={(e) =>
-                              setSelectedArtist(
-                                artists.find(
+                              setSelectedArtist({
+                                ...selectedArtist,
+                                [gig.id]: artists.find(
                                   (artist) =>
                                     artist.user_id === parseInt(e.target.value)
-                                )
-                              )
+                                ),
+                              })
                             }
                           >
                             <option value="">Select an artist</option>
