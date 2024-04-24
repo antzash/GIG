@@ -8,7 +8,7 @@ function ProfilePage() {
   const navigate = useNavigate();
   const [gigs, setGigs] = useState([]);
   const [artists, setArtists] = useState([]);
-  const [selectedArtist, setSelectedArtist] = useState(null);
+  const [selectedArtist, setSelectedArtist] = useState({});
   const [offerMade, setOfferMade] = useState(false);
 
   const isVenue = user.role === "venue";
@@ -50,8 +50,18 @@ function ProfilePage() {
       }
     };
 
+    // Fetch data immediately
     fetchGigs();
     fetchArtists();
+
+    // Set up polling with a shorter interval
+    const intervalId = setInterval(() => {
+      fetchGigs();
+      fetchArtists();
+    }, 500); // Poll every 1 second
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(intervalId);
   }, [user.userId, user.token]);
 
   const offerGig = async (gigId) => {
@@ -165,12 +175,16 @@ function ProfilePage() {
                     </td>
                     <td className="border px-4 py-2">
                       {gig.offered_to ? (
-                        <button onClick={() => retractOffer(gig.id)}>
+                        <button
+                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                          onClick={() => retractOffer(gig.id)}
+                        >
                           Retract Offer
                         </button>
                       ) : (
                         <>
                           <select
+                            className="mr-2"
                             value={selectedArtist?.user_id || ""}
                             onChange={(e) =>
                               setSelectedArtist(
@@ -191,10 +205,16 @@ function ProfilePage() {
                               </option>
                             ))}
                           </select>
-                          <button onClick={() => offerGig(gig.id)}>
+                          <button
+                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={() => offerGig(gig.id)}
+                          >
                             Offer to
                           </button>
-                          <button onClick={() => deleteGig(gig.id)}>
+                          <button
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={() => deleteGig(gig.id)}
+                          >
                             Delete
                           </button>
                         </>
