@@ -50,8 +50,8 @@ function ProfilePage() {
       });
       if (response.ok) {
         console.log("Gig deleted successfully");
-        // Refresh the gigs list
-        fetchGigs();
+        // Filter out the deleted gig from the state
+        setGigs((prevGigs) => prevGigs.filter((gig) => gig.id !== gigId));
       } else {
         console.error("Failed to delete gig");
       }
