@@ -9,17 +9,19 @@ import "./tailwind.css";
 
 function App() {
   return (
-    <UserProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/register" element={<RegistrationForm />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/" element={<HomePage />} />{" "}
-          {/* Set HomePage as the default route */}
-        </Routes>
-      </Router>
-    </UserProvider>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <UserProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<LoginForm />} />
+            <Route path="/register" element={<RegistrationForm />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/" element={<HomePage />} />{" "}
+            {/* Set HomePage as the default route */}
+          </Routes>
+        </Router>
+      </UserProvider>
+    </div>
   );
 }
 

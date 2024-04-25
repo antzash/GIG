@@ -80,11 +80,11 @@ function ProfilePage() {
     fetchGigs();
     fetchArtists();
 
-    // Set up polling with a shorter interval
+    // Set up polling
     const intervalId = setInterval(() => {
       fetchGigs();
       fetchArtists();
-    }, 500); // Poll every 1 second
+    }, 500); //
 
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
