@@ -162,6 +162,31 @@ function ProfilePage() {
       console.error("Error:", error);
     }
   };
+
+  const acceptGig = async (gigId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5001/api/gigs/accept/${gigId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+      if (response.ok) {
+        console.log("Gig accepted successfully");
+        // Optionally, re-fetch the gigs list to update the UI
+        fetchOfferedGigs();
+      } else {
+        console.error("Failed to accept gig");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <div>
       <Header />
@@ -258,6 +283,7 @@ function ProfilePage() {
                   <th className="px-4 py-2">Time</th>
                   <th className="px-4 py-2">Pay</th>
                   <th className="px-4 py-2">Venue Name</th>
+                  <th className="px-4 py-2">Accept?</th>
                 </tr>
               </thead>
               <tbody>
@@ -269,6 +295,9 @@ function ProfilePage() {
                     <td className="border px-4 py-2">{gig.time}</td>
                     <td className="border px-4 py-2">{gig.pay}</td>
                     <td className="border px-4 py-2">{gig.venue_name}</td>
+                    <button onClick={() => acceptGig(gig.id)}>
+                      Accept Gig
+                    </button>
                   </tr>
                 ))}
               </tbody>
