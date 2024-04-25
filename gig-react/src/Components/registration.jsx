@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import gigLogo from "../gig-logo.png"; // Adjust the path as necessary
 
 function RegistrationForm() {
   const [username, setUsername] = useState("");
@@ -48,7 +49,7 @@ function RegistrationForm() {
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-6">
-          <img src="../gig-logo.png" alt="Logo" className="h-12 mb-10" />
+          <img src={gigLogo} alt="Logo" className="h-12 mb-10" />
         </div>
         <form
           onSubmit={handleSubmit}
