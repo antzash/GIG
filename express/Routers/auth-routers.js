@@ -347,7 +347,6 @@ router.get("/gigs/offered", authenticateArtist, async (req, res) => {
 router.post("/gigs/accept/:gigId", authenticateArtist, async (req, res) => {
   const { gigId } = req.params;
   const userId = req.user.userId; // Assuming authenticateArtist attaches the user details to req.user
-  console.log(req.user);
 
   try {
     // Fetch the artist's band name
