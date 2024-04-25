@@ -39,7 +39,6 @@ const HomePage = () => {
       );
       if (response.ok) {
         console.log("Gig accepted successfully");
-        // Optionally, re-fetch the gigs list to update the UI
         fetchGigs();
       } else {
         console.error("Failed to accept gig");
@@ -52,87 +51,85 @@ const HomePage = () => {
   return (
     <div>
       <Header />
+      <hr className="text-amber-400" />
       <div className="p-4">
         {user.role === "venue" && (
           <>
-            <h1>Welcome to the Home Page</h1>
-            <button onClick={() => setShowModal(true)}>Create Gig</button>
+            <br />
+            <button
+              className="bg-amber-400 rounded-lg px-4 py-2"
+              onClick={() => setShowModal(true)}
+            >
+              Create Gig
+            </button>
             {showModal && (
               <div className="modal">
                 <GigPostingForm />
                 <button onClick={() => setShowModal(false)}>Close</button>
               </div>
             )}
-            <div className="p-4">
-              <h2 className="text-2xl font-bold mb-4">Available Gigs</h2>
-              <table className="table-auto w-full">
-                <thead>
-                  <tr>
-                    <th className="px-4 py-2">Venue</th>
-                    <th className="px-4 py-2">Title</th>
-                    <th className="px-4 py-2">Description</th>
-                    <th className="px-4 py-2">Date</th>
-                    <th className="px-4 py-2">Time</th>
-                    <th className="px-4 py-2">Pay</th>
-                    <th className="px-4 py-2">Accepted By</th>
-                    <th className="px-4 py-2">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {gigs.map((gig) => (
-                    <tr key={gig.id}>
-                      <td className="border px-4 py-2">{gig.venue_name}</td>
-                      <td className="border px-4 py-2">{gig.title}</td>
-                      <td className="border px-4 py-2">{gig.description}</td>
-                      <td className="border px-4 py-2">{gig.date}</td>
-                      <td className="border px-4 py-2">{gig.time}</td>
-                      <td className="border px-4 py-2">{gig.pay}</td>
-                      <td className="border px-4 py-2">{gig.accepted_by}</td>
-                      <td className="border px-4 py-2">
-                        <button>Message</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <br />
+            <br />
+            <br />
+            <br />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {gigs.map((gig) => (
+                <div
+                  key={gig.id}
+                  className="bg-white rounded-lg shadow p-4 w-full md:w-[600px] lg:w-[900px] h-[200px]"
+                >
+                  <div className="flex flex-wrap">
+                    <div className="w-full md:w-1/2">
+                      <h2 className="text-xl font-bold mb-2">{gig.title}</h2>
+                      <p className="text-gray-700 mb-2">{gig.description}</p>
+                      <p className="text-gray-500 mb-2">
+                        Venue: {gig.venue_name}
+                      </p>
+                    </div>
+                    <div className="w-full md:w-1/2 text-right">
+                      <p className="text-gray-500 mb-2">Date: {gig.date}</p>
+                      <p className="text-gray-500 mb-2">Time: {gig.time}</p>
+                      <p className="text-gray-500 mb-2">Pay: {gig.pay}</p>
+                      <button className="bg-blue-500 text-white px-4 py-2 rounded">
+                        Message
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </>
         )}
         {user.role === "artist" && (
           <>
             <h1>Welcome to the Home Page</h1>
-            <div className="p-4">
-              <h2 className="text-2xl font-bold mb-4">Available Gigs</h2>
-              <table className="table-auto w-full">
-                <thead>
-                  <tr>
-                    <th className="px-4 py-2">Venue</th>
-                    <th className="px-4 py-2">Title</th>
-                    <th className="px-4 py-2">Description</th>
-                    <th className="px-4 py-2">Date</th>
-                    <th className="px-4 py-2">Time</th>
-                    <th className="px-4 py-2">Pay</th>
-                    <th className="px-4 py-2">Accepted By</th>
-                    <th className="px-4 py-2">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {gigs.map((gig) => (
-                    <tr key={gig.id}>
-                      <td className="border px-4 py-2">{gig.venue_name}</td>
-                      <td className="border px-4 py-2">{gig.title}</td>
-                      <td className="border px-4 py-2">{gig.description}</td>
-                      <td className="border px-4 py-2">{gig.date}</td>
-                      <td className="border px-4 py-2">{gig.time}</td>
-                      <td className="border px-4 py-2">{gig.pay}</td>
-                      <td className="border px-4 py-2">{gig.accepted_by}</td>
-                      <td className="border px-4 py-2">
-                        {gig.accepted_by === null && <button>Message</button>}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {gigs.map((gig) => (
+                <div
+                  key={gig.id}
+                  className="bg-white rounded-lg shadow p-4 w-full md:w-[600px] lg:w-[600px] h-[400px]"
+                >
+                  <div className="flex flex-wrap">
+                    <div className="w-full md:w-1/2">
+                      <h2 className="text-xl font-bold mb-2">{gig.title}</h2>
+                      <p className="text-gray-700 mb-2">{gig.description}</p>
+                      <p className="text-gray-500 mb-2">
+                        Venue: {gig.venue_name}
+                      </p>
+                    </div>
+                    <div className="w-full md:w-1/2 text-right">
+                      <p className="text-gray-500 mb-2">Date: {gig.date}</p>
+                      <p className="text-gray-500 mb-2">Time: {gig.time}</p>
+                      <p className="text-gray-500 mb-2">Pay: {gig.pay}</p>
+                      {gig.accepted_by === null && (
+                        <button className="bg-blue-500 text-white px-4 py-2 rounded">
+                          Message
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </>
         )}
