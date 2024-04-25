@@ -400,7 +400,7 @@ router.post("/gigs/reject/:gigId", authenticateArtist, async (req, res) => {
 
     // Reject the offer by setting the offered_to column back to NULL
     const updateResult = await pool.query(
-      "UPDATE gigs SET offered_to = NULL WHERE id = $1 AND offered_to IS NOT NULL",
+      "UPDATE gigs SET offered_to = NULL, accepted_by = NULL WHERE id = $1 AND offered_to IS NOT NULL",
       [gigId]
     );
 
