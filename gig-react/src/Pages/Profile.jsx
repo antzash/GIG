@@ -10,6 +10,7 @@ function ProfilePage() {
   const [artists, setArtists] = useState([]);
   const [selectedArtist, setSelectedArtist] = useState({});
   const [offeredGigs, setOfferedGigs] = useState([]); // State to hold gigs offered to the artist
+  const [offermade, setOfferMade] = useState([]);
 
   const isVenue = user.role === "venue";
   const isArtist = user.role === "artist";
@@ -187,6 +188,30 @@ function ProfilePage() {
     }
   };
 
+  const rejectGig = async (gigId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5001/api/gigs/reject/${gigId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+      if (response.ok) {
+        console.log("Offer rejected successfully");
+        // Optionally, re-fetch the gigs list to update the UI
+        fetchOfferedGigs();
+      } else {
+        console.error("Failed to reject offer");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <div>
       <Header />
@@ -283,7 +308,7 @@ function ProfilePage() {
                   <th className="px-4 py-2">Time</th>
                   <th className="px-4 py-2">Pay</th>
                   <th className="px-4 py-2">Venue Name</th>
-                  <th className="px-4 py-2">Accept?</th>
+                  <th className="px-4 py-2">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -297,6 +322,9 @@ function ProfilePage() {
                     <td className="border px-4 py-2">{gig.venue_name}</td>
                     <button onClick={() => acceptGig(gig.id)}>
                       Accept Gig
+                    </button>
+                    <button onClick={() => rejectGig(gig.id)}>
+                      Reject Gig
                     </button>
                   </tr>
                 ))}

@@ -380,4 +380,43 @@ router.post("/gigs/accept/:gigId", authenticateArtist, async (req, res) => {
   }
 });
 
+// Reject Offer as Artist
+router.post("/gigs/reject/:gigId", authenticateArtist, async (req, res) => {
+  const { gigId } = req.params;
+  const userId = req.user.userId; // Assuming authenticateArtist attaches the user details to req.user
+
+  try {
+    // Check if the gig is offered to the artist making the rejection request
+    const gigCheck = await pool.query(
+      "SELECT 1 FROM gigs WHERE id = $1 AND offered_to = (SELECT band_name FROM artist_details WHERE user_id = $2)",
+      [gigId, userId]
+    );
+
+    if (gigCheck.rows.length === 0) {
+      return res
+        .status(403)
+        .send("You can only reject offers that you have received.");
+    }
+
+    // Reject the offer by setting the offered_to column back to NULL
+    const updateResult = await pool.query(
+      "UPDATE gigs SET offered_to = NULL WHERE id = $1 AND offered_to IS NOT NULL",
+      [gigId]
+    );
+
+    if (updateResult.rowCount === 0) {
+      return res
+        .status(400)
+        .send(
+          "Failed to reject offer. The gig might not have an offer or the offer has already been rejected."
+        );
+    }
+
+    res.json({ message: "Offer rejected successfully" });
+  } catch (error) {
+    console.error("Failed to reject offer:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 module.exports = router;
