@@ -13,16 +13,17 @@ function Header() {
   };
 
   return (
-    <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
+    <header className="text-black p-4 flex justify-between items-center">
       <Link to="/">
         <img src={gigLogo} alt="Gig Logo" className="h-12" />
       </Link>
+
       <div>
         {user.username && (
           <>
             <span>Welcome, {user.username}</span>
             <nav className="ml-4 inline">
-              <Link to="/profile" className="text-white mr-4">
+              <Link to="/profile" className="text-black mr-4">
                 Profile
               </Link>
               <button
