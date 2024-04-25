@@ -5,7 +5,6 @@ import RegistrationForm from "./Components/Registration";
 import ProfilePage from "./Pages/Profile";
 import HomePage from "./Pages/Homepage"; // Import the HomePage component
 import { UserProvider } from "./Context/UserContext";
-import Header from "./Components/Header"; // Import the Header component
 import "./tailwind.css";
 
 function App() {
