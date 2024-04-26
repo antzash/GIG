@@ -9,6 +9,52 @@ function UserPage() {
   const [profileDetails, setProfileDetails] = useState({});
   const [activeTab, setActiveTab] = useState("reviews");
   const [reviews, setReviews] = useState([]);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewContent, setReviewContent] = useState("");
+
+  const fetchReviews = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5001/api/reviews/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch reviews");
+      }
+      let reviewsData = await response.json();
+
+      // Fetch reviewer details for each review
+      for (let review of reviewsData) {
+        const reviewerResponse = await fetch(
+          `http://localhost:5001/api/user/profile/${review.reviewer_id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+        if (!reviewerResponse.ok) {
+          throw new Error("Failed to fetch reviewer details");
+        }
+        const reviewerDetails = await reviewerResponse.json();
+        review.reviewerName =
+          reviewerDetails.details?.band_name ||
+          reviewerDetails.details?.venue_name;
+      }
+
+      setReviews(reviewsData);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchProfileDetails = async () => {
@@ -33,53 +79,40 @@ function UserPage() {
       }
     };
 
-    const fetchReviews = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:5001/api/reviews/${userId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch reviews");
-        }
-        let reviewsData = await response.json();
-
-        // Fetch reviewer details for each review
-        for (let review of reviewsData) {
-          const reviewerResponse = await fetch(
-            `http://localhost:5001/api/user/profile/${review.reviewer_id}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${user.token}`,
-              },
-            }
-          );
-          if (!reviewerResponse.ok) {
-            throw new Error("Failed to fetch reviewer details");
-          }
-          const reviewerDetails = await reviewerResponse.json();
-          review.reviewerName =
-            reviewerDetails.details?.band_name ||
-            reviewerDetails.details?.venue_name;
-        }
-
-        setReviews(reviewsData);
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
-      }
-    };
-
     fetchProfileDetails();
     fetchReviews();
   }, [userId, user.token]);
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Determine the correct endpoint based on the user's role
+      const endpoint =
+        user.role === "artist"
+          ? `http://localhost:5001/api/reviews/artist-to-venue`
+          : `http://localhost:5001/api/reviews/venue-to-artist`;
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify({
+          reviewee_id: userId,
+          content: reviewContent,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to submit review");
+      }
+      // Refresh reviews after submitting a new review
+      fetchReviews(); // Now fetchReviews is accessible here
+      setShowReviewForm(false); // Hide the review form after submission
+    } catch (error) {
+      console.error("Error submitting review:", error);
+    }
+  };
 
   return (
     <div>
@@ -126,6 +159,28 @@ function UserPage() {
                 </p>
               </div>
             ))}
+            {showReviewForm && (
+              <form onSubmit={handleReviewSubmit}>
+                <textarea
+                  value={reviewContent}
+                  onChange={(e) => setReviewContent(e.target.value)}
+                  placeholder="Write your review here..."
+                  className="w-full p-2 mb-2"
+                />
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white"
+                >
+                  Submit Review
+                </button>
+              </form>
+            )}
+            <button
+              onClick={() => setShowReviewForm(!showReviewForm)}
+              className="px-4 py-2 mt-4 bg-gray-200"
+            >
+              {showReviewForm ? "Cancel" : "Write a Review"}
+            </button>
           </div>
         )}
       </div>
