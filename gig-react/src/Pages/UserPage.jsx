@@ -3,10 +3,11 @@ import { useParams } from "react-router-dom";
 import { useUser } from "../Context/UserContext";
 import Header from "../Components/Header";
 
-function VenuePage() {
+function UserPage() {
   const { userId } = useParams();
   const { user } = useUser();
   const [profileDetails, setProfileDetails] = useState({});
+  const [activeTab, setActiveTab] = useState("gigs"); // Step 1: Define the state for active tab
 
   useEffect(() => {
     const fetchProfileDetails = async () => {
@@ -49,10 +50,31 @@ function VenuePage() {
           </p>
           <p className="text-gray-700 mb-4">{profileDetails.details?.bio}</p>
         </div>
-        {/* Add more fields as needed */}
+        {/* Tabs */}
+        <div className="flex justify-center mt-4">
+          <button
+            className={`px-4 py-2 mx-2 ${
+              activeTab === "gigs" ? "bg-blue-500 text-white" : "bg-gray-200"
+            }`}
+            onClick={() => setActiveTab("gigs")}
+          >
+            Gigs
+          </button>
+          <button
+            className={`px-4 py-2 mx-2 ${
+              activeTab === "reviews" ? "bg-blue-500 text-white" : "bg-gray-200"
+            }`}
+            onClick={() => setActiveTab("reviews")}
+          >
+            Reviews
+          </button>
+        </div>
+        {/* Content based on active tab */}
+        {activeTab === "gigs" && <div>Content for Gigs</div>}
+        {activeTab === "reviews" && <div>Content for Reviews</div>}
       </div>
     </div>
   );
 }
 
-export default VenuePage;
+export default UserPage;
