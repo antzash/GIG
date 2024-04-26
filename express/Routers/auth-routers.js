@@ -419,6 +419,85 @@ router.post("/gigs/reject/:gigId", authenticateArtist, async (req, res) => {
   }
 });
 
-// View Profile
+// Write A Review (Artist to Venue)
+router.post(
+  "/reviews/artist-to-venue",
+  authenticateArtist,
+  async (req, res) => {
+    const { reviewee_id, content } = req.body;
+    const reviewer_id = req.user.userId; // Assuming authenticateArtist attaches the user details to req.user
+
+    // Validate input
+    if (!reviewee_id || !content) {
+      return res.status(400).send("All fields are required");
+    }
+
+    try {
+      // Insert the review into the database
+      const query = `
+       INSERT INTO reviews (reviewer_id, reviewee_id, content)
+       VALUES ($1, $2, $3)
+       RETURNING *;
+     `;
+
+      const result = await pool.query(query, [
+        reviewer_id,
+        reviewee_id,
+        content,
+      ]);
+      res.status(201).json(result.rows[0]);
+    } catch (error) {
+      console.error("Error creating review:", error);
+      res.status(500).send("Failed to create review due to server error.");
+    }
+  }
+);
+
+// Write Review (Venue to Artist)
+router.post("/reviews/venue-to-artist", authenticateVenue, async (req, res) => {
+  const { reviewee_id, content } = req.body;
+  const reviewer_id = req.user.userId; // Assuming authenticateVenue attaches the user details to req.user
+
+  // Validate input
+  if (!reviewee_id || !content) {
+    return res.status(400).send("All fields are required");
+  }
+
+  try {
+    // Insert the review into the database
+    const query = `
+       INSERT INTO reviews (reviewer_id, reviewee_id, content)
+       VALUES ($1, $2, $3)
+       RETURNING *;
+     `;
+
+    const result = await pool.query(query, [reviewer_id, reviewee_id, content]);
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error creating review:", error);
+    res.status(500).send("Failed to create review due to server error.");
+  }
+});
+
+// Get Reviews by User
+router.get("/reviews/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Query to select reviews where the reviewee_id matches the userId
+    const result = await pool.query(
+      "SELECT * FROM reviews WHERE reviewee_id = $1",
+      [userId]
+    );
+    // Return an empty array with a 200 status code if no reviews are found
+    if (result.rows.length === 0) {
+      return res.status(200).json([]);
+    }
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Failed to retrieve reviews:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 module.exports = router;
