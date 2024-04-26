@@ -1,11 +1,9 @@
-// src/Pages/UserPage.jsx
-
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useUser } from "../Context/UserContext";
 import Header from "../Components/Header";
 
-function UserPage() {
+function VenuePage() {
   const { userId } = useParams();
   const { user } = useUser();
   const [profileDetails, setProfileDetails] = useState({});
@@ -57,4 +55,4 @@ function UserPage() {
   );
 }
 
-export default UserPage;
+export default VenuePage;
