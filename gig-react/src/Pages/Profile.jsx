@@ -11,6 +11,7 @@ function ProfilePage() {
   const [selectedArtist, setSelectedArtist] = useState({});
   const [offeredGigs, setOfferedGigs] = useState([]);
   const [profileDetails, setProfileDetails] = useState({});
+  const [selectedTab, setSelectedTab] = useState("yourGigs");
 
   const isVenue = user.role === "venue";
   const isArtist = user.role === "artist";
@@ -270,84 +271,116 @@ function ProfilePage() {
               </p>
               <p className="text-gray-700 mb-4">{profileDetails.details.bio}</p>
             </div>
-            <h2 className="text-2xl font-bold mb-4">Your Gigs</h2>
-            <div className="grid grid-cols-1 gap-4">
-              {gigs.map((gig) => (
-                <div
-                  key={gig.id}
-                  className="bg-white shadow rounded p-4 w-full md:w-[800px] lg:w-[800px] h-[200px] border border-amber-400"
-                >
-                  <div className="flex flex-wrap">
-                    <div className="w-full md:w-1/2">
-                      <h3 className="text-xl font-bold mb-2">{gig.title}</h3>
-                      <p className="text-gray-700 mb-2">{gig.description}</p>
-                      <p className="text-gray-500 mb-2">
-                        Offered to:{" "}
-                        {gig.offered_to ? gig.offered_to : "Not offered yet"}
-                      </p>
-                    </div>
-                    <div className="w-full md:w-1/2 text-right">
-                      <p className="text-gray-500 mb-2">
-                        {formatDate(gig.date)}
-                      </p>
-                      <p className="text-gray-500 mb-2">
-                        {formatTime(gig.time)}
-                      </p>
-                      <p className="text-gray-500 mb-2">${gig.pay}</p>
-                      <div className="flex justify-end space-x-2">
-                        {gig.offered_to ? (
-                          <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                            onClick={() => retractOffer(gig.id)}
-                          >
-                            Retract Offer
-                          </button>
-                        ) : (
-                          <>
-                            <select
-                              className="mr-2 bg-gray-200 text-gray-700 border border-gray-300 rounded py-2 px-4"
-                              value={selectedArtist[gig.id]?.user_id || ""}
-                              onChange={(e) =>
-                                setSelectedArtist({
-                                  ...selectedArtist,
-                                  [gig.id]: artists.find(
-                                    (artist) =>
-                                      artist.user_id ===
-                                      parseInt(e.target.value)
-                                  ),
-                                })
-                              }
-                            >
-                              <option value="">Select an artist</option>
-                              {artists.map((artist) => (
-                                <option
-                                  key={artist.user_id}
-                                  value={artist.user_id}
-                                >
-                                  {artist.band_name}
-                                </option>
-                              ))}
-                            </select>
+
+            {/* Tabs */}
+            <div className="flex justify-center mt-4">
+              <button
+                className={`px-4 py-2 mr-2 mb-5 ${
+                  selectedTab === "yourGigs"
+                    ? "bg-amber-400 text-white font-bold"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+                onClick={() => setSelectedTab("yourGigs")}
+              >
+                Your Gigs
+              </button>
+              <button
+                className={`px-4 py-2 mr-2 mb-5 ${
+                  selectedTab === "reviews"
+                    ? "bg-amber-400 text-white font-bold"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+                onClick={() => setSelectedTab("reviews")}
+              >
+                Reviews
+              </button>
+            </div>
+
+            {/* Conditional rendering for tabs content */}
+            {selectedTab === "yourGigs" && (
+              <div className="grid grid-cols-1 gap-4">
+                {gigs.map((gig) => (
+                  <div
+                    key={gig.id}
+                    className="bg-white shadow rounded p-4 w-full md:w-[800px] lg:w-[800px] h-[200px] border border-amber-400"
+                  >
+                    <div className="flex flex-wrap">
+                      <div className="w-full md:w-1/2">
+                        <h3 className="text-xl font-bold mb-2">{gig.title}</h3>
+                        <p className="text-gray-700 mb-2">{gig.description}</p>
+                        <p className="text-gray-500 mb-2">
+                          Offered to:{" "}
+                          {gig.offered_to ? gig.offered_to : "Not offered yet"}
+                        </p>
+                      </div>
+                      <div className="w-full md:w-1/2 text-right">
+                        <p className="text-gray-500 mb-2">
+                          {formatDate(gig.date)}
+                        </p>
+                        <p className="text-gray-500 mb-2">
+                          {formatTime(gig.time)}
+                        </p>
+                        <p className="text-gray-500 mb-2">${gig.pay}</p>
+                        <div className="flex justify-end space-x-2">
+                          {gig.offered_to ? (
                             <button
-                              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                              onClick={() => offerGig(gig.id)}
+                              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                              onClick={() => retractOffer(gig.id)}
                             >
-                              Offer to
+                              Retract Offer
                             </button>
-                          </>
-                        )}
-                        <button
-                          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                          onClick={() => deleteGig(gig.id)}
-                        >
-                          Delete
-                        </button>
+                          ) : (
+                            <>
+                              <select
+                                className="mr-2 bg-gray-200 text-gray-700 border border-gray-300 rounded py-2 px-4"
+                                value={selectedArtist[gig.id]?.user_id || ""}
+                                onChange={(e) =>
+                                  setSelectedArtist({
+                                    ...selectedArtist,
+                                    [gig.id]: artists.find(
+                                      (artist) =>
+                                        artist.user_id ===
+                                        parseInt(e.target.value)
+                                    ),
+                                  })
+                                }
+                              >
+                                <option value="">Select an artist</option>
+                                {artists.map((artist) => (
+                                  <option
+                                    key={artist.user_id}
+                                    value={artist.user_id}
+                                  >
+                                    {artist.band_name}
+                                  </option>
+                                ))}
+                              </select>
+                              <button
+                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={() => offerGig(gig.id)}
+                              >
+                                Offer to
+                              </button>
+                            </>
+                          )}
+                          <button
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={() => deleteGig(gig.id)}
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
+            {selectedTab === "reviews" && (
+              <div className="grid grid-cols-1 gap-4">
+                {/* Reviews content will go here */}
+              </div>
+            )}
           </>
         )}
         {isArtist && profileDetails.details && (
@@ -362,53 +395,85 @@ function ProfilePage() {
               </p>
               <p className="text-gray-700 mb-4">{profileDetails.details.bio}</p>
             </div>
-            <h2 className="text-2xl font-bold mb-4">Gigs Offered to You</h2>
-            <div className="grid grid-cols-1 gap-4">
-              {offeredGigs.map((gig) => (
-                <div
-                  key={gig.id}
-                  className="bg-white shadow rounded p-4 w-full md:w-[800px] lg:w-[800px] h-[200px] border border-amber-400"
-                >
-                  <div className="flex flex-wrap">
-                    <div className="w-full md:w-1/2">
-                      <h3 className="text-xl font-bold mb-2">{gig.title}</h3>
-                      <p className="text-gray-700 mb-2">{gig.description}</p>
-                    </div>
-                    <div className="w-full md:w-1/2 text-right">
-                      <p className="text-gray-500 mb-2">
-                        {formatDate(gig.date)}
-                      </p>
-                      <p className="text-gray-500 mb-2">
-                        {formatTime(gig.time)}
-                      </p>
-                      <p className="text-gray-500 mb-2">${gig.pay}</p>
-                      <div className="flex justify-end space-x-2">
-                        {gig.accepted_by ? (
-                          <p className="text-white bg-amber-400 px-4 py-2 rounded font-bold">
-                            Accepted
-                          </p>
-                        ) : (
-                          <>
-                            <button
-                              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                              onClick={() => acceptGig(gig.id)}
-                            >
-                              Accept Gig
-                            </button>
-                            <button
-                              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                              onClick={() => rejectGig(gig.id)}
-                            >
-                              Reject Gig
-                            </button>
-                          </>
-                        )}
+
+            {/* Tabs */}
+            <div className="flex justify-center mt-4">
+              <button
+                className={`px-4 py-2 mr-2 mb-5 ${
+                  selectedTab === "yourGigs"
+                    ? "bg-amber-400 text-white font-bold"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+                onClick={() => setSelectedTab("yourGigs")}
+              >
+                Your Gigs
+              </button>
+              <button
+                className={`px-4 py-2 mb-5 ${
+                  selectedTab === "reviews"
+                    ? "bg-amber-500 text-white font-bold"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+                onClick={() => setSelectedTab("reviews")}
+              >
+                Reviews
+              </button>
+            </div>
+
+            {/* Conditional rendering for tabs content */}
+            {selectedTab === "yourGigs" && (
+              <div className="grid grid-cols-1 gap-4">
+                {offeredGigs.map((gig) => (
+                  <div
+                    key={gig.id}
+                    className="bg-white shadow rounded p-4 w-full md:w-[800px] lg:w-[800px] h-[200px] border border-amber-400"
+                  >
+                    <div className="flex flex-wrap">
+                      <div className="w-full md:w-1/2">
+                        <h3 className="text-xl font-bold mb-2">{gig.title}</h3>
+                        <p className="text-gray-700 mb-2">{gig.description}</p>
+                      </div>
+                      <div className="w-full md:w-1/2 text-right">
+                        <p className="text-gray-500 mb-2">
+                          {formatDate(gig.date)}
+                        </p>
+                        <p className="text-gray-500 mb-2">
+                          {formatTime(gig.time)}
+                        </p>
+                        <p className="text-gray-500 mb-2">${gig.pay}</p>
+                        <div className="flex justify-end space-x-2">
+                          {gig.accepted_by ? (
+                            <p className="text-white bg-amber-400 px-4 py-2 rounded font-bold">
+                              Accepted
+                            </p>
+                          ) : (
+                            <>
+                              <button
+                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={() => acceptGig(gig.id)}
+                              >
+                                Accept Gig
+                              </button>
+                              <button
+                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={() => rejectGig(gig.id)}
+                              >
+                                Reject Gig
+                              </button>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
+            {selectedTab === "reviews" && (
+              <div className="grid grid-cols-1 gap-4">
+                {/* Reviews content will go here */}
+              </div>
+            )}
           </>
         )}
       </div>
