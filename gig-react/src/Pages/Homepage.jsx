@@ -70,20 +70,24 @@ const HomePage = () => {
             )}
             <br />
             <br />
-            <br />
-            <br />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+            <div className="grid grid-cols-1 gap-4">
               {gigs.map((gig) => (
                 <div
                   key={gig.id}
-                  className="bg-white rounded-lg shadow p-4 w-full md:w-[600px] lg:w-[900px] h-[200px]"
+                  className="bg-white rounded-[30px] shadow-xl p-4 w-full md:w-[800px] lg:w-[800px] h-[200px] border border-amber-400"
                 >
                   <div className="flex flex-wrap">
                     <div className="w-full md:w-1/2">
-                      <h2 className="text-xl font-bold mb-2">{gig.title}</h2>
+                      <h2 className="text-[30px] text-amber-400 font-bold mb-2">
+                        {gig.title}
+                      </h2>
                       <p className="text-gray-700 mb-2">{gig.description}</p>
                       <p className="text-gray-500 mb-2">
                         Venue: {gig.venue_name}
+                      </p>
+                      <p className="text-green-500 font-bold mb-2">
+                        Accepted By: {gig.accepted_by}
                       </p>
                     </div>
                     <div className="w-full md:w-1/2 text-right">
@@ -103,18 +107,23 @@ const HomePage = () => {
         {user.role === "artist" && (
           <>
             <h1>Welcome to the Home Page</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               {gigs.map((gig) => (
                 <div
                   key={gig.id}
-                  className="bg-white rounded-lg shadow p-4 w-full md:w-[600px] lg:w-[600px] h-[400px]"
+                  className="bg-white rounded-[30px] shadow-xl p-4 w-full md:w-[800px] lg:w-[800px] h-[200px] border border-amber-400"
                 >
                   <div className="flex flex-wrap">
                     <div className="w-full md:w-1/2">
-                      <h2 className="text-xl font-bold mb-2">{gig.title}</h2>
+                      <h2 className="text-[30px] text-amber-400 font-bold mb-2">
+                        {gig.title}
+                      </h2>
                       <p className="text-gray-700 mb-2">{gig.description}</p>
                       <p className="text-gray-500 mb-2">
                         Venue: {gig.venue_name}
+                      </p>
+                      <p className="text-green-500 font-bold mb-2">
+                        Accepted By: {gig.accepted_by}
                       </p>
                     </div>
                     <div className="w-full md:w-1/2 text-right">
