@@ -7,7 +7,7 @@ function UserPage() {
   const { userId } = useParams();
   const { user } = useUser();
   const [profileDetails, setProfileDetails] = useState({});
-  const [activeTab, setActiveTab] = useState("gigs"); // Step 1: Define the state for active tab
+  const [activeTab, setActiveTab] = useState("reviews"); // Step 1: Define the state for active tab
 
   useEffect(() => {
     const fetchProfileDetails = async () => {
@@ -58,7 +58,7 @@ function UserPage() {
             }`}
             onClick={() => setActiveTab("gigs")}
           >
-            Gigs
+            Gallery
           </button>
           <button
             className={`px-4 py-2 mx-2 ${
@@ -70,7 +70,7 @@ function UserPage() {
           </button>
         </div>
         {/* Content based on active tab */}
-        {activeTab === "gigs" && <div>Content for Gigs</div>}
+        {activeTab === "gigs" && <div>Content for Gallery</div>}
         {activeTab === "reviews" && <div>Content for Reviews</div>}
       </div>
     </div>
