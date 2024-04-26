@@ -87,7 +87,7 @@ const HomePage = () => {
               {gigs.map((gig) => (
                 <div
                   key={gig.id}
-                  className="bg-white rounded-[30px] shadow-xl p-4 w-full md:w-[800px] lg:w-[800px] h-[200px] border border-amber-400"
+                  className="bg-white rounded-[30px] shadow-xl p-4 w-full md:w-[800px] lg:w-[800px] h-[250px] border border-amber-400"
                 >
                   <div className="flex flex-wrap">
                     <div className="w-full md:w-1/2">
@@ -127,7 +127,7 @@ const HomePage = () => {
               {gigs.map((gig) => (
                 <div
                   key={gig.id}
-                  className="bg-white rounded-[30px] shadow-xl p-4 w-full md:w-[800px] lg:w-[800px] h-[200px] border border-amber-400"
+                  className="bg-white rounded-[30px] shadow-xl p-4 w-full md:w-[800px] lg:w-[800px] h-[250px] border border-amber-400"
                 >
                   <div className="flex flex-wrap">
                     <div className="w-full md:w-1/2">

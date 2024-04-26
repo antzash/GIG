@@ -258,8 +258,18 @@ function ProfilePage() {
     <div>
       <Header />
       <div className="p-4">
-        {isVenue && (
+        {isVenue && profileDetails.details && (
           <>
+            <div className="flex flex-col items-center">
+              <div className="w-32 h-32 bg-gray-300 rounded-full mb-4"></div>
+              <h2 className="text-2xl font-bold mb-2">
+                {profileDetails.details.venue_name}
+              </h2>
+              <p className="text-gray-700 mb-2">
+                {profileDetails.details.address}
+              </p>
+              <p className="text-gray-700 mb-4">{profileDetails.details.bio}</p>
+            </div>
             <h2 className="text-2xl font-bold mb-4">Your Gigs</h2>
             <div className="grid grid-cols-1 gap-4">
               {gigs.map((gig) => (
@@ -340,8 +350,18 @@ function ProfilePage() {
             </div>
           </>
         )}
-        {isArtist && (
+        {isArtist && profileDetails.details && (
           <>
+            <div className="flex flex-col items-center">
+              <div className="w-32 h-32 bg-gray-300 rounded-full mb-4"></div>
+              <h2 className="text-2xl font-bold mb-2">
+                {profileDetails.details.band_name}
+              </h2>
+              <p className="text-gray-700 mb-2">
+                {profileDetails.details.genre}
+              </p>
+              <p className="text-gray-700 mb-4">{profileDetails.details.bio}</p>
+            </div>
             <h2 className="text-2xl font-bold mb-4">Gigs Offered to You</h2>
             <div className="grid grid-cols-1 gap-4">
               {offeredGigs.map((gig) => (

@@ -25,7 +25,6 @@ function GigPostingForm() {
       });
       if (response.ok) {
         console.log("Gig posted successfully:");
-        navigate("/profile"); // Redirect to the profile page
       } else {
         console.error("Failed to post gig");
       }
