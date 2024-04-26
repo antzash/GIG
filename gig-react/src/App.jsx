@@ -6,6 +6,7 @@ import ProfilePage from "./Pages/Profile";
 import HomePage from "./Pages/Homepage"; // Import the HomePage component
 import { UserProvider } from "./Context/UserContext";
 import "./tailwind.css";
+import UserPage from "./Pages/UserPage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/register" element={<RegistrationForm />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/" element={<HomePage />} />{" "}
+            <Route path="/user/:userId" element={<UserPage />} />
             {/* Set HomePage as the default route */}
           </Routes>
         </Router>

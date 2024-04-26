@@ -1,11 +1,14 @@
 // src/Components/SideBar.jsx
 
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SideBar = () => {
   const [artists, setArtists] = useState([]);
   const [venues, setVenues] = useState([]);
   const [activeTab, setActiveTab] = useState("artists");
+
+  const navigate = useNavigate(); // Initialize navigate function
 
   useEffect(() => {
     const fetchArtists = async () => {
@@ -58,7 +61,11 @@ const SideBar = () => {
         {activeTab === "artists" && (
           <div>
             {artists.map((artist) => (
-              <div key={artist.user_id} className="mb-4">
+              <div
+                key={artist.user_id}
+                className="mb-4"
+                onClick={() => navigate(`/user/${artist.user_id}`)}
+              >
                 <h3 className="text-lg font-semibold">{artist.band_name}</h3>
               </div>
             ))}
@@ -67,7 +74,11 @@ const SideBar = () => {
         {activeTab === "venues" && (
           <div>
             {venues.map((venue) => (
-              <div key={venue.user_id} className="mb-4">
+              <div
+                key={venue.user_id}
+                className="mb-4"
+                onClick={() => navigate(`/user/${venue.user_id}`)}
+              >
                 <h3 className="text-lg font-semibold">{venue.venue_name}</h3>
               </div>
             ))}
