@@ -10,7 +10,7 @@ const SideBar = () => {
   useEffect(() => {
     const fetchArtists = async () => {
       try {
-        const response = await fetch("/api/artists");
+        const response = await fetch("http://localhost:5001/api/artists");
         const data = await response.json();
         setArtists(data);
       } catch (error) {
@@ -20,7 +20,7 @@ const SideBar = () => {
 
     const fetchVenues = async () => {
       try {
-        const response = await fetch("/api/venues");
+        const response = await fetch("http://localhost:5001/api/venues");
         const data = await response.json();
         setVenues(data);
       } catch (error) {
@@ -33,7 +33,7 @@ const SideBar = () => {
   }, []);
 
   return (
-    <div className="w-1/4 bg-gray-100 p-4 rounded-lg shadow-md">
+    <div className="w-1/4 bg-white p-4 border border-amber-400 py-6 px-10 rounded-lg shadow-xl ">
       <div className="tabs flex justify-between mb-4">
         <button
           onClick={() => setActiveTab("artists")}
