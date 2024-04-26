@@ -212,6 +212,18 @@ function ProfilePage() {
     }
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  const formatTime = (timeString) => {
+    const date = new Date(`1970-01-01T${timeString}`);
+    const options = { hour: "2-digit", minute: "2-digit", hour12: true };
+    return date.toLocaleTimeString("en-US", options);
+  };
+
   return (
     <div>
       <Header />
@@ -219,119 +231,126 @@ function ProfilePage() {
         {isVenue && (
           <>
             <h2 className="text-2xl font-bold mb-4">Your Gigs</h2>
-            <table className="table-auto w-full">
-              <thead>
-                <tr>
-                  <th className="px-4 py-2">Title</th>
-                  <th className="px-4 py-2">Description</th>
-                  <th className="px-4 py-2">Date</th>
-                  <th className="px-4 py-2">Time</th>
-                  <th className="px-4 py-2">Pay</th>
-                  <th className="px-4 py-2">Accepted By</th>
-                  <th className="px-4 py-2">Offered To</th>
-                  <th className="px-4 py-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {gigs.map((gig) => (
-                  <tr key={gig.id}>
-                    <td className="border px-4 py-2">{gig.title}</td>
-                    <td className="border px-4 py-2">{gig.description}</td>
-                    <td className="border px-4 py-2">{gig.date}</td>
-                    <td className="border px-4 py-2">{gig.time}</td>
-                    <td className="border px-4 py-2">{gig.pay}</td>
-                    <td className="border px-4 py-2">{gig.accepted_by}</td>
-                    <td className="border px-4 py-2">
-                      {gig.offered_to ? gig.offered_to : "Not offered yet"}
-                    </td>
-                    <td className="border px-4 py-2">
-                      {gig.offered_to ? (
-                        <button
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-                          onClick={() => retractOffer(gig.id)}
-                        >
-                          Retract Offer
-                        </button>
-                      ) : (
-                        <>
-                          <select
-                            className="mr-2"
-                            value={selectedArtist[gig.id]?.user_id || ""}
-                            onChange={(e) =>
-                              setSelectedArtist({
-                                ...selectedArtist,
-                                [gig.id]: artists.find(
-                                  (artist) =>
-                                    artist.user_id === parseInt(e.target.value)
-                                ),
-                              })
-                            }
-                          >
-                            <option value="">Select an artist</option>
-                            {artists.map((artist) => (
-                              <option
-                                key={artist.user_id}
-                                value={artist.user_id}
-                              >
-                                {artist.band_name}
-                              </option>
-                            ))}
-                          </select>
+            <div className="grid grid-cols-1 gap-4">
+              {gigs.map((gig) => (
+                <div
+                  key={gig.id}
+                  className="bg-white shadow rounded p-4 w-full md:w-[800px] lg:w-[800px] h-[200px] border border-amber-400"
+                >
+                  <div className="flex flex-wrap">
+                    <div className="w-full md:w-1/2">
+                      <h3 className="text-xl font-bold mb-2">{gig.title}</h3>
+                      <p className="text-gray-700 mb-2">{gig.description}</p>
+                      <p className="text-gray-500 mb-2">
+                        Offered to:{" "}
+                        {gig.offered_to ? gig.offered_to : "Not offered yet"}
+                      </p>
+                    </div>
+                    <div className="w-full md:w-1/2 text-right">
+                      <p className="text-gray-500 mb-2">
+                        {formatDate(gig.date)}
+                      </p>
+                      <p className="text-gray-500 mb-2">
+                        {formatTime(gig.time)}
+                      </p>
+                      <p className="text-gray-500 mb-2">${gig.pay}</p>
+                      <div className="flex space-x-2">
+                        {gig.offered_to ? (
                           <button
-                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                            onClick={() => offerGig(gig.id)}
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={() => retractOffer(gig.id)}
                           >
-                            Offer to
+                            Retract Offer
                           </button>
-                        </>
-                      )}
-                      <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={() => deleteGig(gig.id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        ) : (
+                          <>
+                            <select
+                              className="mr-2"
+                              value={selectedArtist[gig.id]?.user_id || ""}
+                              onChange={(e) =>
+                                setSelectedArtist({
+                                  ...selectedArtist,
+                                  [gig.id]: artists.find(
+                                    (artist) =>
+                                      artist.user_id ===
+                                      parseInt(e.target.value)
+                                  ),
+                                })
+                              }
+                            >
+                              <option value="">Select an artist</option>
+                              {artists.map((artist) => (
+                                <option
+                                  key={artist.user_id}
+                                  value={artist.user_id}
+                                >
+                                  {artist.band_name}
+                                </option>
+                              ))}
+                            </select>
+                            <button
+                              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                              onClick={() => offerGig(gig.id)}
+                            >
+                              Offer to
+                            </button>
+                          </>
+                        )}
+                        <button
+                          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                          onClick={() => deleteGig(gig.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </>
         )}
         {isArtist && (
           <>
             <h2 className="text-2xl font-bold mb-4">Gigs Offered to You</h2>
-            <table className="table-auto w-full">
-              <thead>
-                <tr>
-                  <th className="px-4 py-2">Title</th>
-                  <th className="px-4 py-2">Description</th>
-                  <th className="px-4 py-2">Date</th>
-                  <th className="px-4 py-2">Time</th>
-                  <th className="px-4 py-2">Pay</th>
-                  <th className="px-4 py-2">Venue Name</th>
-                  <th className="px-4 py-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {offeredGigs.map((gig) => (
-                  <tr key={gig.id}>
-                    <td className="border px-4 py-2">{gig.title}</td>
-                    <td className="border px-4 py-2">{gig.description}</td>
-                    <td className="border px-4 py-2">{gig.date}</td>
-                    <td className="border px-4 py-2">{gig.time}</td>
-                    <td className="border px-4 py-2">{gig.pay}</td>
-                    <td className="border px-4 py-2">{gig.venue_name}</td>
-                    <button onClick={() => acceptGig(gig.id)}>
-                      Accept Gig
-                    </button>
-                    <button onClick={() => rejectGig(gig.id)}>
-                      Reject Gig
-                    </button>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="grid grid-cols-1 gap-4">
+              {offeredGigs.map((gig) => (
+                <div
+                  key={gig.id}
+                  className="bg-white shadow rounded p-4 w-full md:w-[800px] lg:w-[800px] h-[200px] border border-amber-400"
+                >
+                  <div className="flex flex-wrap">
+                    <div className="w-full md:w-1/2">
+                      <h3 className="text-xl font-bold mb-2">{gig.title}</h3>
+                      <p className="text-gray-700 mb-2">{gig.description}</p>
+                    </div>
+                    <div className="w-full md:w-1/2 text-right">
+                      <p className="text-gray-500 mb-2">
+                        {formatDate(gig.date)}
+                      </p>
+                      <p className="text-gray-500 mb-2">
+                        {formatTime(gig.time)}
+                      </p>
+                      <p className="text-gray-500 mb-2">${gig.pay}</p>
+                      <div className="flex space-x-2">
+                        {gig.accepted_by ? (
+                          <p className="text-green-500 font-bold">Accepted</p>
+                        ) : (
+                          <>
+                            <button onClick={() => acceptGig(gig.id)}>
+                              Accept Gig
+                            </button>
+                            <button onClick={() => rejectGig(gig.id)}>
+                              Reject Gig
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </>
         )}
       </div>

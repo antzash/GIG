@@ -48,6 +48,18 @@ const HomePage = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  const formatTime = (timeString) => {
+    const date = new Date(`1970-01-01T${timeString}`);
+    const options = { hour: "2-digit", minute: "2-digit", hour12: true };
+    return date.toLocaleTimeString("en-US", options);
+  };
+
   return (
     <div>
       <Header />
@@ -91,9 +103,13 @@ const HomePage = () => {
                       </p>
                     </div>
                     <div className="w-full md:w-1/2 text-right">
-                      <p className="text-gray-500 mb-2">Date: {gig.date}</p>
-                      <p className="text-gray-500 mb-2">Time: {gig.time}</p>
-                      <p className="text-gray-500 mb-2">Pay: {gig.pay}</p>
+                      <p className="text-gray-500 mb-2">
+                        {formatDate(gig.date)}
+                      </p>
+                      <p className="text-gray-500 mb-2">
+                        {formatTime(gig.time)}
+                      </p>
+                      <p className="text-gray-500 mb-2">${gig.pay}</p>
                       <button className="bg-blue-500 text-white px-4 py-2 rounded">
                         Message
                       </button>
@@ -127,9 +143,13 @@ const HomePage = () => {
                       </p>
                     </div>
                     <div className="w-full md:w-1/2 text-right">
-                      <p className="text-gray-500 mb-2">Date: {gig.date}</p>
-                      <p className="text-gray-500 mb-2">Time: {gig.time}</p>
-                      <p className="text-gray-500 mb-2">Pay: {gig.pay}</p>
+                      <p className="text-gray-500 mb-2">
+                        {formatDate(gig.date)}
+                      </p>
+                      <p className="text-gray-500 mb-2">
+                        {formatTime(gig.time)}
+                      </p>
+                      <p className="text-gray-500 mb-2">${gig.pay}</p>
                       {gig.accepted_by === null && (
                         <button className="bg-blue-500 text-white px-4 py-2 rounded">
                           Message
