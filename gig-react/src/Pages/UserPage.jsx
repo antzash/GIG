@@ -7,7 +7,8 @@ function UserPage() {
   const { userId } = useParams();
   const { user } = useUser();
   const [profileDetails, setProfileDetails] = useState({});
-  const [activeTab, setActiveTab] = useState("reviews"); // Step 1: Define the state for active tab
+  const [activeTab, setActiveTab] = useState("reviews");
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     const fetchProfileDetails = async () => {
@@ -32,7 +33,52 @@ function UserPage() {
       }
     };
 
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5001/api/reviews/${userId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch reviews");
+        }
+        let reviewsData = await response.json();
+
+        // Fetch reviewer details for each review
+        for (let review of reviewsData) {
+          const reviewerResponse = await fetch(
+            `http://localhost:5001/api/user/profile/${review.reviewer_id}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user.token}`,
+              },
+            }
+          );
+          if (!reviewerResponse.ok) {
+            throw new Error("Failed to fetch reviewer details");
+          }
+          const reviewerDetails = await reviewerResponse.json();
+          review.reviewerName =
+            reviewerDetails.details?.band_name ||
+            reviewerDetails.details?.venue_name;
+        }
+
+        setReviews(reviewsData);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
+
     fetchProfileDetails();
+    fetchReviews();
   }, [userId, user.token]);
 
   return (
@@ -71,7 +117,17 @@ function UserPage() {
         </div>
         {/* Content based on active tab */}
         {activeTab === "gigs" && <div>Content for Gallery</div>}
-        {activeTab === "reviews" && <div>Content for Reviews</div>}
+        {activeTab === "reviews" && (
+          <div>
+            {reviews.map((review) => (
+              <div key={review.id}>
+                <p>
+                  <strong>{review.reviewerName}:</strong> {review.content}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
