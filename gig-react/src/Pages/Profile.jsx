@@ -254,7 +254,7 @@ function ProfilePage() {
                         {formatTime(gig.time)}
                       </p>
                       <p className="text-gray-500 mb-2">${gig.pay}</p>
-                      <div className="flex space-x-2">
+                      <div className="flex justify-end space-x-2">
                         {gig.offered_to ? (
                           <button
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -265,7 +265,7 @@ function ProfilePage() {
                         ) : (
                           <>
                             <select
-                              className="mr-2"
+                              className="mr-2 bg-gray-200 text-gray-700 border border-gray-300 rounded py-2 px-4"
                               value={selectedArtist[gig.id]?.user_id || ""}
                               onChange={(e) =>
                                 setSelectedArtist({
@@ -332,15 +332,23 @@ function ProfilePage() {
                         {formatTime(gig.time)}
                       </p>
                       <p className="text-gray-500 mb-2">${gig.pay}</p>
-                      <div className="flex space-x-2">
+                      <div className="flex justify-end space-x-2">
                         {gig.accepted_by ? (
-                          <p className="text-green-500 font-bold">Accepted</p>
+                          <p className="text-white bg-amber-400 px-4 py-2 rounded font-bold">
+                            Accepted
+                          </p>
                         ) : (
                           <>
-                            <button onClick={() => acceptGig(gig.id)}>
+                            <button
+                              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                              onClick={() => acceptGig(gig.id)}
+                            >
                               Accept Gig
                             </button>
-                            <button onClick={() => rejectGig(gig.id)}>
+                            <button
+                              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                              onClick={() => rejectGig(gig.id)}
+                            >
                               Reject Gig
                             </button>
                           </>
