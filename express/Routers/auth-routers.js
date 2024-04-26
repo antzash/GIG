@@ -419,4 +419,6 @@ router.post("/gigs/reject/:gigId", authenticateArtist, async (req, res) => {
   }
 });
 
+// View Profile
+
 module.exports = router;

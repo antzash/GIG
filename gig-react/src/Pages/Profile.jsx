@@ -9,8 +9,8 @@ function ProfilePage() {
   const [gigs, setGigs] = useState([]);
   const [artists, setArtists] = useState([]);
   const [selectedArtist, setSelectedArtist] = useState({});
-  const [offeredGigs, setOfferedGigs] = useState([]); // State to hold gigs offered to the artist
-  const [offermade, setOfferMade] = useState([]);
+  const [offeredGigs, setOfferedGigs] = useState([]);
+  const [profileDetails, setProfileDetails] = useState({});
 
   const isVenue = user.role === "venue";
   const isArtist = user.role === "artist";
@@ -33,6 +33,36 @@ function ProfilePage() {
       console.error("Error fetching offered gigs:", error);
     }
   };
+
+  useEffect(() => {
+    const fetchProfileDetails = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5001/api/user/profile/${user.userId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch user profile");
+        }
+        const data = await response.json();
+        setProfileDetails(data); // Store the fetched profile details in state
+        console.log(data); // Log the profile details to check if it retrieves the data
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+
+    // Fetch profile details only if user.userId and user.token are available
+    if (user.userId && user.token) {
+      fetchProfileDetails();
+    }
+  }, [user.userId, user.token]); // Depend on the user state to re-fetch if the user ID or token changes
 
   useEffect(() => {
     // Fetch gigs offered to the artist if the user is an artist
