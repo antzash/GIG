@@ -543,4 +543,26 @@ router.post("/messages", async (req, res) => {
   }
 });
 
+// Retrieve Chat between Users
+router.get("/messages/:senderId/:recipientId", async (req, res) => {
+  const { senderId, recipientId } = req.params;
+
+  try {
+    // Query to fetch messages between the sender and recipient
+    const result = await pool.query(
+      `SELECT * FROM chat_messages WHERE (sender_id = $1 AND recipient_id = $2) OR (sender_id = $2 AND recipient_id = $1) ORDER BY sent_at`,
+      [senderId, recipientId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).send("No messages found between these users.");
+    }
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 module.exports = router;

@@ -1,4 +1,5 @@
-// src/Components/Chat.jsx
+// Chat.jsx
+
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import Header from "./Header";
@@ -29,10 +30,35 @@ function Chat() {
     return () => socket.disconnect();
   }, []);
 
+  // Modified function to fetch messages
+  const fetchMessages = async (senderId, recipientId) => {
+    // Clear messages before fetching new ones
+    setMessages([]);
+
+    try {
+      const response = await fetch(
+        `http://localhost:5001/api/messages/${senderId}/${recipientId}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch messages");
+      }
+      const data = await response.json();
+      setMessages(data); // This will update the messages state with messages between the logged-in user and the selected user
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  };
+
+  // Call fetchMessages when a user is selected
+  useEffect(() => {
+    if (selectedUser) {
+      fetchMessages(user.userId, selectedUser.id);
+    }
+  }, [selectedUser, user.userId]);
+
   const sendMessage = async (e) => {
     e.preventDefault();
     if (message && selectedUser) {
-      // Use the current user's ID as the senderId
       const senderId = user.userId;
       const recipientId = selectedUser.id;
 
@@ -52,6 +78,8 @@ function Chat() {
         const data = await response.json();
         console.log("Message sent successfully:", data);
         setMessage("");
+        // Re-fetch messages to include the newly sent message
+        fetchMessages(senderId, recipientId);
       } catch (error) {
         console.error("Error sending message:", error);
       }
@@ -79,22 +107,35 @@ function Chat() {
                       : ""
                   }`}
                 >
-                  {user.username} {/* Access the username field */}
+                  {user.username}
                 </li>
               ))}
             </ul>
           </section>
           <section className="flex flex-col w-3/4 p-4 space-y-4 overflow-y-scroll">
             <h2 className="text-lg font-semibold">
-              Chat with {selectedUser ? selectedUser.username : "Select a user"}
-            </h2>{" "}
-            {/* Access the username field */}
+              {selectedUser ? selectedUser.username : "Select a user"}
+            </h2>
             <ul>
-              {messages.map((message, index) => (
-                <li key={index} className="p-2 rounded-lg bg-blue-100">
-                  {message.content}
-                </li>
-              ))}
+              {messages.length === 0 ? (
+                <li className="p-2 text-center">No messages yet.</li>
+              ) : (
+                messages.map((message, index) => (
+                  <li
+                    key={index}
+                    className={`p-2 rounded-lg ${
+                      message.senderId === user.userId
+                        ? "self-end bg-blue-100"
+                        : "self-start bg-gray-100"
+                    } flex flex-col space-y-1`}
+                  >
+                    <p>{message.message}</p>
+                    <span className="text-xs">
+                      {new Date(message.sent_at).toLocaleTimeString()}
+                    </span>
+                  </li>
+                ))
+              )}
             </ul>
             <form onSubmit={sendMessage} className="flex">
               <input
@@ -117,5 +158,4 @@ function Chat() {
     </div>
   );
 }
-
 export default Chat;
