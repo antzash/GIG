@@ -1,6 +1,7 @@
 // src/Components/Chat.jsx
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
+import Header from "./Header";
 
 const socket = io("http://localhost:5001");
 
@@ -11,7 +12,7 @@ function Chat() {
   const [selectedUser, setSelectedUser] = useState(null); // Currently selected user
 
   useEffect(() => {
-    // Fetch list of users (you'll need to implement this on your server)
+    // Fetch list of users
     fetch("http://localhost:5001/api/users")
       .then((response) => response.json())
       .then((data) => setUsers(data));
@@ -34,31 +35,59 @@ function Chat() {
 
   return (
     <div>
-      <select
-        onChange={(e) =>
-          setSelectedUser(users.find((user) => user.id === e.target.value))
-        }
-      >
-        <option value="">Select a user to chat with</option>
-        {users.map((user) => (
-          <option key={user.id} value={user.id}>
-            {user.name}
-          </option>
-        ))}
-      </select>
-      <ul>
-        {messages.map((message, index) => (
-          <li key={index}>{message.content}</li>
-        ))}
-      </ul>
-      <form onSubmit={sendMessage}>
-        <input
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          type="text"
-        />
-        <button type="submit">Send</button>
-      </form>
+      <Header />
+      <div className="flex flex-col h-screen justify-between">
+        <header className="p-6 bg-blue-500 text-white">
+          <h1 className="text-2xl font-bold">Chat</h1>
+        </header>
+        <main className="flex flex-row flex-grow overflow-hidden">
+          <section className="flex flex-col w-1/4 bg-gray-200 p-4 space-y-2">
+            <h2 className="text-lg font-semibold">Users</h2>
+            <ul>
+              {users.map((user) => (
+                <li
+                  key={user.id}
+                  onClick={() => setSelectedUser(user)}
+                  className={`p-2 rounded-lg ${
+                    selectedUser && selectedUser.id === user.id
+                      ? "bg-blue-100"
+                      : ""
+                  }`}
+                >
+                  {user.name}
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section className="flex flex-col w-3/4 p-4 space-y-4 overflow-y-scroll">
+            <h2 className="text-lg font-semibold">
+              Chat with {selectedUser ? selectedUser.name : "Select a user"}
+            </h2>
+            <ul>
+              {messages.map((message, index) => (
+                <li key={index} className="p-2 rounded-lg bg-blue-100">
+                  {message.content}
+                </li>
+              ))}
+            </ul>
+            <form onSubmit={sendMessage} className="flex">
+              <input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                type="text"
+                placeholder="Type your message..."
+                className="flex-grow border border-gray-300 rounded-md p-2"
+              />
+              <button
+                type="submit"
+                className="ml-4 bg-blue-500 text-white p-2 rounded-md"
+              >
+                Send
+              </button>
+            </form>
+          </section>
+        </main>
+      </div>
     </div>
   );
 }

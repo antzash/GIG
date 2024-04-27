@@ -515,6 +515,16 @@ router.get("/reviews/:userId", async (req, res) => {
   }
 });
 
-// Get
+// Get All Users
+// In auth-routers.js
+router.get("/users", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM users");
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Failed to retrieve users:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 module.exports = router;
