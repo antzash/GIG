@@ -89,12 +89,13 @@ function Chat() {
   return (
     <div>
       <Header />
-      <div className="flex flex-col h-screen justify-between">
-        <header className="p-6 bg-blue-500 text-white">
-          <h1 className="text-2xl font-bold">Chat</h1>
+      <div className="flex flex-col h-screen justify-between mt-10">
+        <header className="p-2 text-amber-400">
+          <h1 className="text-[30px] font-light">Messages</h1>
+          <hr />
         </header>
         <main className="flex flex-row flex-grow overflow-hidden">
-          <section className="flex flex-col w-1/4 bg-gray-200 p-4 space-y-2">
+          <section className="flex flex-col w-1/4  p-4 space-y-2">
             <h2 className="text-lg font-semibold">Users</h2>
             <ul>
               {users.map((user) => (
@@ -103,7 +104,7 @@ function Chat() {
                   onClick={() => setSelectedUser(user)}
                   className={`p-2 rounded-lg ${
                     selectedUser && selectedUser.id === user.id
-                      ? "bg-blue-100"
+                      ? "bg-amber-400"
                       : ""
                   }`}
                 >
@@ -123,10 +124,10 @@ function Chat() {
                 messages.map((message, index) => (
                   <li
                     key={index}
-                    className={`p-2 rounded-lg ${
-                      message.senderId === user.userId
-                        ? "self-end bg-blue-100"
-                        : "self-start bg-gray-100"
+                    className={`p-2 mb-5 rounded-lg ${
+                      message.sender_id === user.userId
+                        ? "ml-auto bg-gray-200 rounded-lg p-2 max-w-xs"
+                        : "mr-auto bg-amber-400 rounded-lg p-2 max-w-xs"
                     } flex flex-col space-y-1`}
                   >
                     <p>{message.message}</p>
@@ -147,7 +148,7 @@ function Chat() {
               />
               <button
                 type="submit"
-                className="ml-4 bg-blue-500 text-white p-2 rounded-md"
+                className="ml-4 bg-amber-400 text-white p-2 rounded-md"
               >
                 Send
               </button>
