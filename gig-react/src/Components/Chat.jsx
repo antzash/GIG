@@ -12,10 +12,13 @@ function Chat() {
   const [selectedUser, setSelectedUser] = useState(null); // Currently selected user
 
   useEffect(() => {
-    // Fetch list of users
     fetch("http://localhost:5001/api/users")
       .then((response) => response.json())
-      .then((data) => setUsers(data));
+      .then((data) => {
+        console.log(data); // Debug the fetched data
+        setUsers(data);
+      })
+      .catch((error) => console.error("Error fetching users:", error));
 
     socket.on("chat message", (msg) => {
       setMessages((messages) => [...messages, msg]);
@@ -54,15 +57,16 @@ function Chat() {
                       : ""
                   }`}
                 >
-                  {user.name}
+                  {user.username} {/* Access the username field */}
                 </li>
               ))}
             </ul>
           </section>
           <section className="flex flex-col w-3/4 p-4 space-y-4 overflow-y-scroll">
             <h2 className="text-lg font-semibold">
-              Chat with {selectedUser ? selectedUser.name : "Select a user"}
-            </h2>
+              Chat with {selectedUser ? selectedUser.username : "Select a user"}
+            </h2>{" "}
+            {/* Access the username field */}
             <ul>
               {messages.map((message, index) => (
                 <li key={index} className="p-2 rounded-lg bg-blue-100">
