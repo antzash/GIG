@@ -1,4 +1,6 @@
 const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
 const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -10,6 +12,31 @@ app.use(express.urlencoded({ extended: true })); // for parsing application/x-ww
 
 // CORS middleware
 app.use(cors());
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5001", // Adjust this to your client's origin for security
+    methods: ["GET", "POST"],
+  },
+});
+
+// Socket.IO connection handler
+io.on("connection", (socket) => {
+  console.log("a user connected");
+
+  // Listen for chat message
+  socket.on("chat message", (msg) => {
+    console.log("message: " + msg);
+    // Broadcast the message to all connected clients
+    io.emit("chat message", msg);
+  });
+
+  // Disconnect handler
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+});
 
 const { Pool } = require("pg");
 const pool = new Pool({
@@ -27,6 +54,7 @@ app.get("/", async (req, res) => {
   res.send(rows[0]);
 });
 
-app.listen(PORT, () => {
+// Start the server
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

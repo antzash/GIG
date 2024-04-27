@@ -26,6 +26,9 @@ function Header() {
               <Link to="/profile" className="text-black mr-4">
                 Profile
               </Link>
+              <Link to="/chat" className="text-black mr-4">
+                Chat
+              </Link>
               <button
                 onClick={handleLogout}
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
