@@ -516,13 +516,29 @@ router.get("/reviews/:userId", async (req, res) => {
 });
 
 // Get All Users
-// In auth-routers.js
 router.get("/users", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM users");
     res.json(result.rows);
   } catch (error) {
     console.error("Failed to retrieve users:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+//Store Chat Messages in Postgres
+router.post("/messages", async (req, res) => {
+  const { senderId, recipientId, message } = req.body;
+
+  try {
+    const result = await pool.query(
+      "INSERT INTO chat_messages (sender_id, recipient_id, message) VALUES ($1, $2, $3) RETURNING *",
+      [senderId, recipientId, message]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error storing message:", error);
     res.status(500).send("Internal Server Error");
   }
 });

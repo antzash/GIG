@@ -2,20 +2,21 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import Header from "./Header";
+import { useUser } from "../Context/UserContext";
 
 const socket = io("http://localhost:5001");
 
 function Chat() {
+  const { user } = useUser(); // Access the current user's information
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]); // List of users to chat with
-  const [selectedUser, setSelectedUser] = useState(null); // Currently selected user
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:5001/api/users")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data); // Debug the fetched data
         setUsers(data);
       })
       .catch((error) => console.error("Error fetching users:", error));
@@ -28,11 +29,32 @@ function Chat() {
     return () => socket.disconnect();
   }, []);
 
-  const sendMessage = (e) => {
+  const sendMessage = async (e) => {
     e.preventDefault();
     if (message && selectedUser) {
-      socket.emit("chat message", { message, to: selectedUser.id });
-      setMessage("");
+      // Use the current user's ID as the senderId
+      const senderId = user.userId;
+      const recipientId = selectedUser.id;
+
+      try {
+        const response = await fetch("http://localhost:5001/api/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ senderId, recipientId, message }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to send message");
+        }
+
+        const data = await response.json();
+        console.log("Message sent successfully:", data);
+        setMessage("");
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
     }
   };
 
