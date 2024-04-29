@@ -1,5 +1,3 @@
-// Chat.jsx
-
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import Header from "./Header";
@@ -11,7 +9,7 @@ function Chat() {
   const { user } = useUser();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [users, setUsers] = useState([]); // List of users to chat with
+  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
@@ -28,23 +26,23 @@ function Chat() {
       setMessages((messages) => [...messages, msg]);
     });
 
-    // Set up a timer to fetch messages every 500 milliseconds
-    const timer = setInterval(() => {
-      if (selectedUser) {
-        fetchMessages(user.userId, selectedUser.id);
-      }
-    }, 100);
-
-    // Clear the timer when the component unmounts
     return () => {
-      clearInterval(timer);
       socket.disconnect();
     };
-  }, [selectedUser, user.userId]); // Dependencies to re-run the effect
+  }, []);
 
-  // Function to fetch messages
+  useEffect(() => {
+    if (selectedUser) {
+      // Fetch messages when a user is selected
+      fetchMessages(user.userId, selectedUser.id);
+    }
+  }, [selectedUser, user.userId]);
+
   const fetchMessages = async (senderId, recipientId) => {
     try {
+      // Clear messages before fetching new ones
+      setMessages([]);
+
       const response = await fetch(
         `http://localhost:5001/api/messages/${senderId}/${recipientId}`
       );
@@ -52,13 +50,12 @@ function Chat() {
         throw new Error("Failed to fetch messages");
       }
       const data = await response.json();
-      setMessages(data); // Update the messages state with messages between the logged-in user and the selected user
+      setMessages(data);
     } catch (error) {
       console.error("Error fetching messages:", error);
     }
   };
 
-  // Function to send a message
   const sendMessage = async (e) => {
     e.preventDefault();
     if (message && selectedUser) {
@@ -81,17 +78,12 @@ function Chat() {
         const data = await response.json();
         console.log("Message sent successfully:", data);
         setMessage("");
+
         fetchMessages(senderId, recipientId);
       } catch (error) {
         console.error("Error sending message:", error);
       }
     }
-  };
-
-  const formatTime = (timeString) => {
-    const date = new Date(`1970-01-01T${timeString}`);
-    const options = { hour: "2-digit", minute: "2-digit", hour12: true };
-    return date.toLocaleTimeString("en-US", options);
   };
 
   return (
@@ -167,4 +159,5 @@ function Chat() {
     </div>
   );
 }
+
 export default Chat;
