@@ -88,6 +88,12 @@ function Chat() {
     }
   };
 
+  const formatTime = (timeString) => {
+    const date = new Date(`1970-01-01T${timeString}`);
+    const options = { hour: "2-digit", minute: "2-digit", hour12: true };
+    return date.toLocaleTimeString("en-US", options);
+  };
+
   return (
     <div>
       <Header />
