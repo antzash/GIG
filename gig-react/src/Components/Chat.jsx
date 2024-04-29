@@ -8,13 +8,14 @@ import { useUser } from "../Context/UserContext";
 const socket = io("http://localhost:5001");
 
 function Chat() {
-  const { user } = useUser(); // Access the current user's information
+  const { user } = useUser();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]); // List of users to chat with
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
+    // Fetch users and set up socket connection
     fetch("http://localhost:5001/api/users")
       .then((response) => response.json())
       .then((data) => {
@@ -22,19 +23,27 @@ function Chat() {
       })
       .catch((error) => console.error("Error fetching users:", error));
 
+    // Listen for new messages
     socket.on("chat message", (msg) => {
       setMessages((messages) => [...messages, msg]);
     });
 
-    // Clean up the effect
-    return () => socket.disconnect();
-  }, []);
+    // Set up a timer to fetch messages every 500 milliseconds
+    const timer = setInterval(() => {
+      if (selectedUser) {
+        fetchMessages(user.userId, selectedUser.id);
+      }
+    }, 100);
 
-  // Modified function to fetch messages
+    // Clear the timer when the component unmounts
+    return () => {
+      clearInterval(timer);
+      socket.disconnect();
+    };
+  }, [selectedUser, user.userId]); // Dependencies to re-run the effect
+
+  // Function to fetch messages
   const fetchMessages = async (senderId, recipientId) => {
-    // Clear messages before fetching new ones
-    setMessages([]);
-
     try {
       const response = await fetch(
         `http://localhost:5001/api/messages/${senderId}/${recipientId}`
@@ -43,19 +52,13 @@ function Chat() {
         throw new Error("Failed to fetch messages");
       }
       const data = await response.json();
-      setMessages(data); // This will update the messages state with messages between the logged-in user and the selected user
+      setMessages(data); // Update the messages state with messages between the logged-in user and the selected user
     } catch (error) {
       console.error("Error fetching messages:", error);
     }
   };
 
-  // Call fetchMessages when a user is selected
-  useEffect(() => {
-    if (selectedUser) {
-      fetchMessages(user.userId, selectedUser.id);
-    }
-  }, [selectedUser, user.userId]);
-
+  // Function to send a message
   const sendMessage = async (e) => {
     e.preventDefault();
     if (message && selectedUser) {
@@ -78,7 +81,6 @@ function Chat() {
         const data = await response.json();
         console.log("Message sent successfully:", data);
         setMessage("");
-        // Re-fetch messages to include the newly sent message
         fetchMessages(senderId, recipientId);
       } catch (error) {
         console.error("Error sending message:", error);
