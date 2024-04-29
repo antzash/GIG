@@ -151,15 +151,18 @@ function UserPage() {
         {/* Content based on active tab */}
         {activeTab === "gigs" && <div>Content for Gallery</div>}
         {activeTab === "reviews" && (
-          <div>
+          <div className="grid grid-cols-1 gap-4">
             {reviews.map((review) => (
               <div
                 key={review.id}
-                className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col"
+                className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
               >
                 <div className="mb-4">
                   <p className="text-gray-700 text-base">
-                    <strong>{review.reviewerName}:</strong> {review.content}
+                    <strong>“{review.content}”</strong>
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    - {review.reviewerName}
                   </p>
                 </div>
                 {/* Add any additional review details here */}
