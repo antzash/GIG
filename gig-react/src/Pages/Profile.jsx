@@ -13,7 +13,14 @@ function ProfilePage() {
   const [profileDetails, setProfileDetails] = useState({});
   const [selectedTab, setSelectedTab] = useState("yourGigs");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedGig, setSelectedGig] = useState(null);
+  const [selectedGig, setSelectedGig] = useState({
+    id: null,
+    title: "",
+    description: "",
+    date: "",
+    pay: "",
+    time: "",
+  });
 
   const isVenue = user.role === "venue";
   const isArtist = user.role === "artist";
@@ -256,12 +263,7 @@ function ProfilePage() {
     const options = { hour: "2-digit", minute: "2-digit", hour12: true };
     return date.toLocaleTimeString("en-US", options);
   };
-
   const handleEditGig = async () => {
-    // Assuming you have a function to get the updated values from the form
-    const updatedTitle = document.getElementById("title").value;
-    const updatedDescription = document.getElementById("description").value;
-
     try {
       const response = await fetch(
         `http://localhost:5001/api/gigs/${selectedGig.id}`,
@@ -271,10 +273,7 @@ function ProfilePage() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${user.token}`,
           },
-          body: JSON.stringify({
-            title: updatedTitle,
-            description: updatedDescription,
-          }),
+          body: JSON.stringify(selectedGig),
         }
       );
 
@@ -399,7 +398,14 @@ function ProfilePage() {
                               <button
                                 className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
                                 onClick={() => {
-                                  setSelectedGig(gig);
+                                  setSelectedGig({
+                                    id: gig.id,
+                                    title: gig.title,
+                                    description: gig.description,
+                                    date: gig.date,
+                                    pay: gig.pay,
+                                    time: gig.time,
+                                  });
                                   setIsModalOpen(true);
                                 }}
                               >
@@ -514,13 +520,87 @@ function ProfilePage() {
               </div>
             )}
             {selectedTab === "reviews" && (
-              <div className="grid grid-cols-1 gap-4">
-                {/* Reviews content will go here */}
-              </div>
+              <div className="grid grid-cols-1 gap-4"></div>
             )}
           </>
         )}
       </div>
+      {isModalOpen && selectedGig && (
+        <div
+          className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
+          id="my-modal"
+        >
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div className="mt-3 text-center">
+              <h3 className="text-lg leading-6 font-medium text-gray-900">
+                Edit Gig
+              </h3>
+              <form className="mt-2 px-7 py-3" onSubmit={handleEditGig}>
+                <input
+                  type="text"
+                  className="mb-2 appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="Title"
+                  value={selectedGig.title}
+                  onChange={(e) =>
+                    setSelectedGig({ ...selectedGig, title: e.target.value })
+                  }
+                />
+                <textarea
+                  className="mb-2 appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="Description"
+                  value={selectedGig.description}
+                  onChange={(e) =>
+                    setSelectedGig({
+                      ...selectedGig,
+                      description: e.target.value,
+                    })
+                  }
+                />
+                <input
+                  type="date"
+                  className="mb-2 appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value={selectedGig.date}
+                  onChange={(e) =>
+                    setSelectedGig({ ...selectedGig, date: e.target.value })
+                  }
+                />
+                <input
+                  type="text"
+                  className="mb-2 appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  placeholder="Pay"
+                  value={selectedGig.pay}
+                  onChange={(e) =>
+                    setSelectedGig({ ...selectedGig, pay: e.target.value })
+                  }
+                />
+                <input
+                  type="time"
+                  className="mb-2 appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value={selectedGig.time}
+                  onChange={(e) =>
+                    setSelectedGig({ ...selectedGig, time: e.target.value })
+                  }
+                />
+                <div className="flex items-center justify-between">
+                  <button
+                    type="button"
+                    className="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-700 focus:outline-none"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700 focus:outline-none"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
