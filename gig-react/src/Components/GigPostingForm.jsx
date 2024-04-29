@@ -25,11 +25,14 @@ function GigPostingForm() {
       });
       if (response.ok) {
         console.log("Gig posted successfully:");
+        window.alert("Your gig has been successfully created.");
       } else {
         console.error("Failed to post gig");
+        window.alert("You were not able to successfull create a gig");
       }
     } catch (error) {
       console.error("Error:", error);
+      window.alert("Error submitting gigs");
     }
   };
 

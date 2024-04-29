@@ -37,7 +37,7 @@ function RegistrationForm() {
       if (response.ok) {
         console.log("User registered successfully");
         console.log("Sending registration data:", userDetails);
-        // Replace the modal with a browser alert
+
         window.alert("Your account has been successfully created.");
       } else {
         console.error("Failed to register");
