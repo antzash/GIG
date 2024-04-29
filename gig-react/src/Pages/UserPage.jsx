@@ -131,14 +131,14 @@ function UserPage() {
         </div>
         {/* Tabs */}
         <div className="flex justify-center mt-4">
-          <button
+          {/* <button
             className={`px-4 py-2 mx-2 ${
               activeTab === "gigs" ? "bg-blue-500 text-white" : "bg-gray-200"
             }`}
             onClick={() => setActiveTab("gigs")}
           >
-            Gallery
-          </button>
+            Gigs
+          </button> */}
           <button
             className={`px-4 py-2 mx-2 ${
               activeTab === "reviews" ? "bg-blue-500 text-white" : "bg-gray-200"
