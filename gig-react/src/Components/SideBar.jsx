@@ -36,7 +36,7 @@ const SideBar = () => {
   }, []);
 
   return (
-    <div className="w-1/4 bg-white p-4 border border-amber-400 py-6 px-10 rounded-lg shadow-xl ">
+    <div className="w-1/4 bg-white p-4 border border-amber-400 py-6 px-10 rounded-lg shadow-xl mt-4 ">
       <div className="tabs flex justify-between mb-4">
         <button
           onClick={() => setActiveTab("artists")}
