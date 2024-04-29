@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import gigLogo from "../gig-logo.png"; // Adjust the path as necessary
+import Modal from "react-modal"; // Import Modal if you're using react-modal
 
 function RegistrationForm() {
   const [username, setUsername] = useState("");
@@ -12,6 +13,7 @@ function RegistrationForm() {
   const [venueName, setVenueName] = useState(""); // Specific to venues
   const [address, setAddress] = useState(""); // Specific to venues
   const [venueBio, setVenueBio] = useState(""); // Specific to venues
+  const [modalIsOpen, setModalIsOpen] = useState(false); // State to control modal visibility
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -37,6 +39,7 @@ function RegistrationForm() {
       if (response.ok) {
         console.log("User registered successfully");
         console.log("Sending registration data:", userDetails);
+        setModalIsOpen(true); // Open the modal on successful registration
       } else {
         console.error("Failed to register");
       }
@@ -45,9 +48,25 @@ function RegistrationForm() {
     }
   };
 
+  // Function to close the modal
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md">
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          contentLabel="Account Created"
+          className="modal"
+          overlayClassName="overlay"
+        >
+          <h2>Account Created</h2>
+          <p>Your account has been successfully created.</p>
+          <button onClick={closeModal}>Close</button>
+        </Modal>
         <div className="flex justify-center mb-6">
           <img src={gigLogo} alt="Logo" className="h-12 mb-10" />
         </div>
