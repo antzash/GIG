@@ -565,4 +565,51 @@ router.get("/messages/:senderId/:recipientId", async (req, res) => {
   }
 });
 
+// Edit Gigs as Venue
+router.put("/gigs/:gigId", authenticateVenue, async (req, res) => {
+  const { gigId } = req.params;
+  const userId = req.user.userId; // Assuming authenticateVenue attaches the user details to req.user
+  const { title, description, date, pay, time } = req.body;
+
+  try {
+    // Verify that the gig belongs to the venue
+    const gigCheck = await pool.query(
+      "SELECT 1 FROM gigs WHERE id = $1 AND user_id = $2",
+      [gigId, userId]
+    );
+
+    if (gigCheck.rows.length === 0) {
+      return res
+        .status(403)
+        .send("You can only edit gigs that you have created.");
+    }
+
+    // Update the gig details
+    const updateQuery = `
+       UPDATE gigs
+       SET title = COALESCE($1, title),
+           description = COALESCE($2, description),
+           date = COALESCE($3, date),
+           pay = COALESCE($4, pay),
+           time = COALESCE($5, time)
+       WHERE id = $6
+       RETURNING *;
+     `;
+
+    const result = await pool.query(updateQuery, [
+      title,
+      description,
+      date,
+      pay,
+      time,
+      gigId,
+    ]);
+
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error updating gig:", error);
+    res.status(500).send("Failed to update gig due to server error.");
+  }
+});
+
 module.exports = router;
