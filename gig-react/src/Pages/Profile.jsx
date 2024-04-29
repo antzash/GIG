@@ -483,7 +483,7 @@ function ProfilePage() {
                 {reviews.map((review) => (
                   <div
                     key={review.id}
-                    className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+                    className="bg-white border border-amber-400 shadow-md rounded px-8 pt-6 pb-8 mb-4"
                   >
                     <div className="mb-4">
                       <p className="text-gray-700 text-base">
@@ -590,7 +590,7 @@ function ProfilePage() {
                 {reviews.map((review) => (
                   <div
                     key={review.id}
-                    className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+                    className="bg-white border border-amber-400 shadow-md rounded px-8 pt-6 pb-8 mb-4"
                   >
                     <div className="mb-4">
                       <p className="text-gray-700 text-base">

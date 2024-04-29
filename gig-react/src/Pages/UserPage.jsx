@@ -130,15 +130,15 @@ function UserPage() {
           <p className="text-gray-700 mb-4">{profileDetails.details?.bio}</p>
         </div>
         {/* Tabs */}
-        <div className="flex justify-center mt-4">
-          {/* <button
+        <div className="flex justify-center mt-4 mb-8">
+          <button
             className={`px-4 py-2 mx-2 ${
               activeTab === "gigs" ? "bg-blue-500 text-white" : "bg-gray-200"
             }`}
             onClick={() => setActiveTab("gigs")}
           >
             Gigs
-          </button> */}
+          </button>
           <button
             className={`px-4 py-2 mx-2 ${
               activeTab === "reviews" ? "bg-blue-500 text-white" : "bg-gray-200"
@@ -153,19 +153,22 @@ function UserPage() {
         {activeTab === "reviews" && (
           <div className="grid grid-cols-1 gap-4">
             {reviews.map((review) => (
-              <div
-                key={review.id}
-                className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-              >
-                <div className="mb-4">
-                  <p className="text-gray-700 text-base">
-                    <strong>“{review.content}”</strong>
-                  </p>
-                  <p className="text-gray-500 text-sm">
-                    - {review.reviewerName}
-                  </p>
-                </div>
-                {/* Add any additional review details here */}
+              <div className="grid grid-cols-1 gap-4">
+                {reviews.map((review) => (
+                  <div
+                    key={review.id}
+                    className="bg-white border border-amber-400 shadow-md rounded px-8 pt-6 pb-8 mb-4"
+                  >
+                    <div className="mb-4">
+                      <p className="text-gray-700 text-base">
+                        <strong>“{review.content}”</strong>
+                      </p>
+                      <p className="text-gray-500 text-sm">
+                        - {review.reviewerName}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             ))}
             {showReviewForm && (
