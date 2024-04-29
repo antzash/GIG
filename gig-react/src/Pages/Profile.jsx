@@ -12,6 +12,8 @@ function ProfilePage() {
   const [offeredGigs, setOfferedGigs] = useState([]);
   const [profileDetails, setProfileDetails] = useState({});
   const [selectedTab, setSelectedTab] = useState("yourGigs");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedGig, setSelectedGig] = useState(null);
 
   const isVenue = user.role === "venue";
   const isArtist = user.role === "artist";
@@ -255,6 +257,39 @@ function ProfilePage() {
     return date.toLocaleTimeString("en-US", options);
   };
 
+  const handleEditGig = async () => {
+    // Assuming you have a function to get the updated values from the form
+    const updatedTitle = document.getElementById("title").value;
+    const updatedDescription = document.getElementById("description").value;
+
+    try {
+      const response = await fetch(
+        `http://localhost:5001/api/gigs/${selectedGig.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: JSON.stringify({
+            title: updatedTitle,
+            description: updatedDescription,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update gig");
+      }
+
+      // Close the modal and refresh the gigs list
+      setIsModalOpen(false);
+      // Optionally, refresh the gigs list to reflect the changes
+    } catch (error) {
+      console.error("Error updating gig:", error);
+    }
+  };
+
   return (
     <div>
       <Header />
@@ -360,6 +395,15 @@ function ProfilePage() {
                                 onClick={() => offerGig(gig.id)}
                               >
                                 Offer to
+                              </button>
+                              <button
+                                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={() => {
+                                  setSelectedGig(gig);
+                                  setIsModalOpen(true);
+                                }}
+                              >
+                                Edit
                               </button>
                             </>
                           )}
