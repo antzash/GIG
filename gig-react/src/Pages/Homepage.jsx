@@ -127,7 +127,6 @@ const HomePage = () => {
               )}
               {user.role === "artist" && (
                 <>
-                  <h1>Welcome to the Home Page</h1>
                   <div className="grid grid-cols-1 gap-4">
                     {gigs.map((gig) => (
                       <div
