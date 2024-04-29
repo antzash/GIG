@@ -15,10 +15,10 @@ function App() {
       <UserProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<LoginForm />} />{" "}
             <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<RegistrationForm />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/" element={<HomePage />} />{" "}
             <Route path="/user/:userId" element={<UserPage />} />
             <Route path="/chat" element={<Chat />} />
             {/* Set HomePage as the default route */}
