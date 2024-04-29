@@ -347,15 +347,20 @@ function ProfilePage() {
       <div className="p-4">
         {isVenue && profileDetails.details && (
           <>
-            <div className="flex flex-col items-center">
-              <div className="w-32 h-32 bg-gray-300 rounded-full mb-4"></div>
-              <h2 className="text-2xl font-bold mb-2">
-                {profileDetails.details.venue_name}
+            <div className="flex flex-col items-start">
+              <h2 className="text-3xl font-bold mb-2">
+                {profileDetails.details?.band_name ||
+                  profileDetails.details?.venue_name}
               </h2>
-              <p className="text-gray-700 mb-2">
-                {profileDetails.details.address}
+              <p className="text-lg text-gray-700 mb-2">
+                {profileDetails.details?.address}
               </p>
-              <p className="text-gray-700 mb-4">{profileDetails.details.bio}</p>
+              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Visit Website
+              </button>
+              <p className="text-gray-700 mt-4">
+                {profileDetails.details?.bio}
+              </p>
             </div>
 
             {/* Tabs */}
@@ -501,15 +506,20 @@ function ProfilePage() {
         )}
         {isArtist && profileDetails.details && (
           <>
-            <div className="flex flex-col items-center">
-              <div className="w-32 h-32 bg-gray-300 rounded-full mb-4"></div>
-              <h2 className="text-2xl font-bold mb-2">
-                {profileDetails.details.band_name}
+            <div className="flex flex-col items-start">
+              <h2 className="text-[50px] font-bold mb-2">
+                {profileDetails.details?.band_name ||
+                  profileDetails.details?.venue_name}
               </h2>
-              <p className="text-gray-700 mb-2">
-                {profileDetails.details.genre}
+              <p className="text-lg text-gray-700 mb-2">
+                {profileDetails.details?.genre}
               </p>
-              <p className="text-gray-700 mb-4">{profileDetails.details.bio}</p>
+              <button className="bg-amber-400 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded">
+                Visit Website
+              </button>
+              <p className="text-gray-700 mt-4">
+                {profileDetails.details?.bio}
+              </p>
             </div>
 
             {/* Tabs */}
@@ -522,12 +532,12 @@ function ProfilePage() {
                 }`}
                 onClick={() => setSelectedTab("yourGigs")}
               >
-                Your Gigs
+                Your Gigss
               </button>
               <button
                 className={`px-4 py-2 mb-5 ${
                   selectedTab === "reviews"
-                    ? "bg-amber-500 text-white font-bold"
+                    ? "bg-amber-400 text-white font-bold"
                     : "bg-gray-200 text-gray-700"
                 }`}
                 onClick={() => setSelectedTab("reviews")}

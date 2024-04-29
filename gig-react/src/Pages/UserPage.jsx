@@ -118,16 +118,18 @@ function UserPage() {
     <div>
       <Header />
       <div className="p-4">
-        <div className="flex flex-col items-center">
-          <div className="w-32 h-32 bg-gray-300 rounded-full mb-4"></div>
-          <h2 className="text-2xl font-bold mb-2">
+        <div className="flex flex-col items-start">
+          <h2 className="text-3xl font-bold mb-2">
             {profileDetails.details?.band_name ||
               profileDetails.details?.venue_name}
           </h2>
-          <p className="text-gray-700 mb-2">
-            {profileDetails.details?.genre || profileDetails.details?.address}
+          <p className="text-lg text-gray-700 mb-2">
+            {profileDetails.details?.address}
           </p>
-          <p className="text-gray-700 mb-4">{profileDetails.details?.bio}</p>
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Visit Website
+          </button>
+          <p className="text-gray-700 mt-4">{profileDetails.details?.bio}</p>
         </div>
         {/* Tabs */}
         <div className="flex justify-center mt-4 mb-8">
