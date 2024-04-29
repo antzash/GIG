@@ -23,7 +23,7 @@ function LoginForm() {
         // Update the user state with the userId and token
         updateUser({ userId: data.userId, token: data.token });
         // Redirect to the profile page
-        navigate("/profile");
+        navigate("/");
       } else {
         console.error("Failed to login");
       }
