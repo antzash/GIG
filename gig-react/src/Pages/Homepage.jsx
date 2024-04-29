@@ -83,7 +83,12 @@ const HomePage = () => {
             {showModal && (
               <div className="modal">
                 <GigPostingForm />
-                <button onClick={() => setShowModal(false)}>Close</button>
+                <button
+                  className="bg-blue-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-9 mb-9 focus:outline-none focus:shadow-outline"
+                  onClick={() => setShowModal(false)}
+                >
+                  Close
+                </button>
               </div>
             )}
             <div className="grid grid-cols-1 gap-4">
