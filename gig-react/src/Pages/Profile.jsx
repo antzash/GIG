@@ -26,6 +26,56 @@ function ProfilePage() {
   const isVenue = user.role === "venue";
   const isArtist = user.role === "artist";
 
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5001/api/reviews/${user.userId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch reviews");
+        }
+        let reviewsData = await response.json();
+
+        // Fetch reviewer details for each review
+        for (let review of reviewsData) {
+          const reviewerResponse = await fetch(
+            `http://localhost:5001/api/user/profile/${review.reviewer_id}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user.token}`,
+              },
+            }
+          );
+          if (!reviewerResponse.ok) {
+            throw new Error("Failed to fetch reviewer details");
+          }
+          const reviewerDetails = await reviewerResponse.json();
+          review.reviewerName =
+            reviewerDetails.details?.band_name ||
+            reviewerDetails.details?.venue_name;
+        }
+
+        setReviews(reviewsData);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
+
+    if (user.userId && user.token) {
+      fetchReviews();
+    }
+  }, [user.userId, user.token]);
+
   const fetchOfferedGigs = async () => {
     try {
       const response = await fetch(`http://localhost:5001/api/gigs/offered`, {
@@ -291,35 +341,6 @@ function ProfilePage() {
     }
   };
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:5001/api/reviews/${user.userId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch reviews");
-        }
-        const data = await response.json();
-        setReviews(data); // Assuming you have a state to store reviews
-        console.log(data); // Log the fetched reviews data
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
-      }
-    };
-
-    if (user.userId && user.token) {
-      fetchReviews();
-    }
-  }, [user.userId, user.token]); // Depend on the user state to re-fetch if the user ID or token changes
-
   return (
     <div>
       <Header />
@@ -459,25 +480,21 @@ function ProfilePage() {
             )}
             {selectedTab === "reviews" && (
               <div className="grid grid-cols-1 gap-4">
-                {activeTab === "reviews" && (
-                  <div>
-                    {reviews.map((review) => (
-                      <div
-                        key={review.id}
-                        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-                      >
-                        <div className="mb-4">
-                          <p className="text-gray-700 text-base">
-                            <strong>“{review.content}”</strong>
-                          </p>
-                          <p className="text-gray-500 text-sm">
-                            - {review.reviewerName}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
+                {reviews.map((review) => (
+                  <div
+                    key={review.id}
+                    className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+                  >
+                    <div className="mb-4">
+                      <p className="text-gray-700 text-base">
+                        <strong>“{review.content}”</strong>
+                      </p>
+                      <p className="text-gray-500 text-sm">
+                        - {review.reviewerName}
+                      </p>
+                    </div>
                   </div>
-                )}
+                ))}
               </div>
             )}
           </>
@@ -569,7 +586,23 @@ function ProfilePage() {
               </div>
             )}
             {selectedTab === "reviews" && (
-              <div className="grid grid-cols-1 gap-4"></div>
+              <div className="grid grid-cols-1 gap-4">
+                {reviews.map((review) => (
+                  <div
+                    key={review.id}
+                    className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+                  >
+                    <div className="mb-4">
+                      <p className="text-gray-700 text-base">
+                        <strong>“{review.content}”</strong>
+                      </p>
+                      <p className="text-gray-500 text-sm">
+                        - {review.reviewerName}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </>
         )}
