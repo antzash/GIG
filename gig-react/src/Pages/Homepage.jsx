@@ -84,7 +84,10 @@ const HomePage = () => {
                 <GigPostingForm />
                 <button
                   className="bg-blue-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-9 mb-9 focus:outline-none focus:shadow-outline"
-                  onClick={() => setShowModal(false)}
+                  onClick={() => {
+                    setShowModal(false);
+                    window.location.reload();
+                  }}
                 >
                   Close
                 </button>

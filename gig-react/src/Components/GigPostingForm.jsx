@@ -38,7 +38,7 @@ function GigPostingForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white rounded px-8 pt-6 pb-8 mb-4"
+      className="bg-gray-100 rounded px-8 pt-6 pb-8 mb-4"
     >
       <div className="mb-4">
         <label
@@ -119,7 +119,7 @@ function GigPostingForm() {
       </div>
       <div className="flex items-center justify-between">
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="bg-green-700 hover:bg-amber-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           type="submit"
         >
           Submit
