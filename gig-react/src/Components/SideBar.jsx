@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../Context/UserContext"; // Adjust the import path as necessary
 
 const SideBar = () => {
   const [artists, setArtists] = useState([]);
   const [venues, setVenues] = useState([]);
   const [activeTab, setActiveTab] = useState("artists");
+  const { user } = useUser();
+  const loggedInUserId = user.userId;
 
   const navigate = useNavigate(); // Initialize navigate function
 
@@ -13,7 +16,11 @@ const SideBar = () => {
       try {
         const response = await fetch("http://localhost:5001/api/artists");
         const data = await response.json();
-        setArtists(data);
+        // Filter out the logged-in user from the list of artists
+        const filteredArtists = data.filter(
+          (artist) => artist.user_id !== loggedInUserId
+        );
+        setArtists(filteredArtists);
       } catch (error) {
         console.error("Failed to fetch artists:", error);
       }
@@ -23,7 +30,11 @@ const SideBar = () => {
       try {
         const response = await fetch("http://localhost:5001/api/venues");
         const data = await response.json();
-        setVenues(data);
+        // Filter out the logged-in user from the list of venues
+        const filteredVenues = data.filter(
+          (venue) => venue.user_id !== loggedInUserId
+        );
+        setVenues(filteredVenues);
       } catch (error) {
         console.error("Failed to fetch venues:", error);
       }
@@ -31,7 +42,7 @@ const SideBar = () => {
 
     fetchArtists();
     fetchVenues();
-  }, []);
+  }, [loggedInUserId]); // Add loggedInUserId as a dependency
 
   return (
     <div className="w-1/4 bg-white p-4 border border-amber-400 py-6 px-10 rounded-lg shadow-xl mt-4 ">
