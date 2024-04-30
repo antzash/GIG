@@ -1,7 +1,6 @@
-// src/Components/GigPostingForm.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../Context/UserContext";
+import { useUser } from "../Context/UserContext"; // Get details of logged in user
 
 function GigPostingForm() {
   const [title, setTitle] = useState("");
@@ -9,9 +8,9 @@ function GigPostingForm() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [pay, setPay] = useState("");
-  const navigate = useNavigate();
   const { user } = useUser();
 
+  // Submit Gig function
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
