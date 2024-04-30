@@ -103,28 +103,39 @@ const HomePage = () => {
                 >
                   <div className="flex flex-wrap">
                     <div className="w-full md:w-1/2">
-                      <h2 className="text-[30px] text-amber-400 font-bold mb-2">
+                      <h2 className="text-[30px] text-amber-500 font-bold mb-2">
                         {gig.title}
                       </h2>
                       <p className="text-gray-700 mb-2">{gig.description}</p>
-                      <p className="text-gray-500 mb-2">
-                        Venue: {gig.venue_name}
+                      <p className="text-black-500 font-bold text-[20px] mb-4 mt-4">
+                        at{" "}
+                        <span className="text-amber-500 text-[20px]">
+                          {gig.venue_name}
+                        </span>
                       </p>
-                      <p className="text-green-500 font-bold mb-2">
-                        Accepted By: {gig.accepted_by}
-                      </p>
+                      {gig.accepted_by ? (
+                        <p className="text-green-500 font-bold mb-2">
+                          Accepted By: {gig.accepted_by}
+                        </p>
+                      ) : (
+                        <p className="text-green-500 text-[20px] font-bold mb-2">
+                          Open
+                        </p>
+                      )}
                     </div>
                     <div className="w-full md:w-1/2 text-right">
-                      <p className="text-gray-500 mb-2">
+                      <p className="text-amber-500 text-[25px] mb-2">
                         {formatDate(gig.date)}
                       </p>
                       <p className="text-gray-500 mb-2">
                         {formatTime(gig.time)}
                       </p>
-                      <p className="text-gray-500 mb-2">${gig.pay}</p>
+                      <p className="text-[20px] text-green-500 mb-2">
+                        ${gig.pay}
+                      </p>
                       {user.role === "artist" && gig.accepted_by === null && (
                         <button
-                          className="bg-blue-500 text-white px-4 py-2 rounded"
+                          className="bg-amber-500 hover:bg-green-500 hover:scale-110 hover:shadow-lg text-white px-4 py-2 rounded"
                           onClick={() => navigate(`/chat`)}
                         >
                           Message

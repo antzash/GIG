@@ -408,7 +408,7 @@ function ProfilePage() {
                           </p>
                         ) : (
                           <p className="text-gray-500 mb-2 font-bold mt-4">
-                            Offered by:{" "}
+                            Offered to:{" "}
                             <span
                               className={`${
                                 gig.offered_to ? "bg-amber-500" : "bg-cyan-500"
