@@ -391,26 +391,40 @@ function ProfilePage() {
                 {gigs.map((gig) => (
                   <div
                     key={gig.id}
-                    className="bg-white shadow rounded p-4 w-full md:w-[800px] lg:w-[800px] h-[200px] border border-amber-400"
+                    className="bg-white shadow rounded-xl hover:scale-110 hover:shadow-lg p-4 w-full md:w-[800px] lg:w-[800px] h-[200px] border border-amber-400"
                   >
                     <div className="flex flex-wrap">
                       <div className="w-full md:w-1/2">
-                        <h3 className="text-xl font-bold mb-2">{gig.title}</h3>
-                        <p className="text-gray-700 mb-2">{gig.description}</p>
-                        <p className="text-gray-500 mb-2">
+                        <h3 className="text-xl text-amber-500 font-bold mb-2">
+                          {gig.title}
+                        </h3>
+                        <p className="text-gray-700 font-light mb-2">
+                          {gig.description}
+                        </p>
+                        <p className="text-gray-500 mb-2 font-bold mt-6">
                           Offered to:{" "}
-                          {gig.offered_to ? gig.offered_to : "Not offered yet"}
+                          <span
+                            className={`${
+                              gig.offered_to ? "bg-amber-500" : "bg-red-500"
+                            } text-white rounded-xl p-2`}
+                          >
+                            {gig.offered_to
+                              ? gig.offered_to
+                              : "Not offered yet"}
+                          </span>
                         </p>
                       </div>
                       <div className="w-full md:w-1/2 text-right">
-                        <p className="text-gray-500 mb-2">
+                        <p className="text-black font-bold text-[15px] mb-2">
                           {formatDate(gig.date)}
                         </p>
                         <p className="text-gray-500 mb-2">
                           {formatTime(gig.time)}
                         </p>
-                        <p className="text-gray-500 mb-2">${gig.pay}</p>
-                        <div className="flex justify-end space-x-2">
+                        <p className="text-green-500 text-[19px] mb-2">
+                          ${gig.pay}
+                        </p>
+                        <div className="flex justify-end space-x-1">
                           {gig.offered_to ? (
                             <button
                               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -445,13 +459,13 @@ function ProfilePage() {
                                 ))}
                               </select>
                               <button
-                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded hover:scale-110 hover:shadow-lg"
                                 onClick={() => offerGig(gig.id)}
                               >
                                 Offer to
                               </button>
                               <button
-                                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+                                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded hover:scale-110 hover:shadow-lg"
                                 onClick={() => {
                                   setSelectedGig({
                                     id: gig.id,
@@ -469,7 +483,7 @@ function ProfilePage() {
                             </>
                           )}
                           <button
-                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded hover:scale-110 hover:shadow-lg"
                             onClick={() => deleteGig(gig.id)}
                           >
                             Delete
@@ -554,17 +568,25 @@ function ProfilePage() {
                   >
                     <div className="flex flex-wrap">
                       <div className="w-full md:w-1/2">
-                        <h3 className="text-xl font-bold mb-2">{gig.title}</h3>
+                        <h3 className="text-[30px] text-amber-500 font-bold mb-2">
+                          {gig.title}
+                        </h3>
                         <p className="text-gray-700 mb-2">{gig.description}</p>
+                        <p className="text-gray-500 mb-2 font-bold mt-4">
+                          Offered by:{" "}
+                          <span className="bg-amber-500 p-2 rounded-xl text-white">
+                            {gig.venue_name}
+                          </span>
+                        </p>
                       </div>
                       <div className="w-full md:w-1/2 text-right">
-                        <p className="text-gray-500 mb-2">
+                        <p className="text-amber-500 mb-2 text-[20px]">
                           {formatDate(gig.date)}
                         </p>
                         <p className="text-gray-500 mb-2">
                           {formatTime(gig.time)}
                         </p>
-                        <p className="text-gray-500 mb-2">${gig.pay}</p>
+                        <p className="text-green-500 mb-2">${gig.pay}</p>
                         <div className="flex justify-end space-x-2">
                           {gig.accepted_by ? (
                             <p className="text-white bg-amber-400 px-4 py-2 rounded font-bold">
