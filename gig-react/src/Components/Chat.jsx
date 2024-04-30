@@ -11,6 +11,7 @@ function Chat() {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const loggedInUserId = user.userId; // Assuming the user object has a userId property
 
   // Useffect to fetch users and set up socket connection and listen for new messages
   useEffect(() => {
@@ -102,19 +103,21 @@ function Chat() {
           <section className="flex flex-col w-1/4  p-4 space-y-2">
             <h2 className="text-lg font-semibold">Users</h2>
             <ul>
-              {users.map((user) => (
-                <li
-                  key={user.id}
-                  onClick={() => setSelectedUser(user)}
-                  className={`p-2 rounded-lg ${
-                    selectedUser && selectedUser.id === user.id
-                      ? "bg-amber-400"
-                      : ""
-                  }`}
-                >
-                  {user.username}
-                </li>
-              ))}
+              {users
+                .filter((user) => user.id !== loggedInUserId)
+                .map((user) => (
+                  <li
+                    key={user.id}
+                    onClick={() => setSelectedUser(user)}
+                    className={`p-2 rounded-lg ${
+                      selectedUser && selectedUser.id === user.id
+                        ? "bg-amber-400"
+                        : ""
+                    }`}
+                  >
+                    {user.username}
+                  </li>
+                ))}
             </ul>
           </section>
           <section className="flex flex-col w-3/4 p-4 space-y-4 overflow-y-scroll">
