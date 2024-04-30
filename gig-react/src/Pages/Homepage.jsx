@@ -3,12 +3,14 @@ import Header from "../Components/Header";
 import GigPostingForm from "../Components/GigPostingForm";
 import { useUser } from "../Context/UserContext";
 import SideBar from "../Components/SideBar";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const { user } = useUser();
   const [showModal, setShowModal] = useState(false);
   const [gigs, setGigs] = useState([]);
   const [sortByDate, setSortByDate] = useState("asc");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGigs = async () => {
@@ -121,7 +123,10 @@ const HomePage = () => {
                       </p>
                       <p className="text-gray-500 mb-2">${gig.pay}</p>
                       {user.role === "artist" && gig.accepted_by === null && (
-                        <button className="bg-blue-500 text-white px-4 py-2 rounded">
+                        <button
+                          className="bg-blue-500 text-white px-4 py-2 rounded"
+                          onClick={() => navigate(`/chat`)}
+                        >
                           Message
                         </button>
                       )}
