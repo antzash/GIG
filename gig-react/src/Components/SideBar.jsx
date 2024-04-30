@@ -51,7 +51,7 @@ const SideBar = () => {
           onClick={() => setActiveTab("artists")}
           className={`px-4 py-2 ${
             activeTab === "artists"
-              ? "font-bold text-blue-500"
+              ? "font-bold text-amber-500"
               : "text-gray-500"
           }`}
         >
@@ -60,7 +60,9 @@ const SideBar = () => {
         <button
           onClick={() => setActiveTab("venues")}
           className={`px-4 py-2 ${
-            activeTab === "venues" ? "font-bold text-blue-500" : "text-gray-500"
+            activeTab === "venues"
+              ? "font-bold text-amber-500"
+              : "text-gray-500"
           }`}
         >
           Discover Venues

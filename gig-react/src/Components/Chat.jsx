@@ -94,6 +94,7 @@ function Chat() {
   return (
     <div>
       <Header />
+      <hr />
       <div className="flex flex-col h-screen justify-between mt-10">
         <header className="p-2 text-amber-400">
           <h1 className="text-[30px] font-light">Messages</h1>

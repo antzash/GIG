@@ -342,6 +342,7 @@ function ProfilePage() {
   return (
     <div>
       <Header />
+      <hr />
       <div className="p-4">
         {isVenue && profileDetails.details && (
           <>

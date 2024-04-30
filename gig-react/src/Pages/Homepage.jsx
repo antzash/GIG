@@ -57,6 +57,7 @@ const HomePage = () => {
   return (
     <div className="flex flex-col h-screen">
       <Header className="fixed top-0 w-full z-50" />
+      <hr />
       <div className="flex flex-row flex-grow overflow-auto pt-16">
         <SideBar />
         <div className="w-3/4">
