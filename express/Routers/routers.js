@@ -13,7 +13,7 @@ const {
   authenticateArtist,
 } = require("../Middleware/middleware");
 
-// POST /register
+// Register a User
 router.post("/register", async (req, res) => {
   const { username, password, role, bandName, genre, bio, venueName, address } =
     req.body;
@@ -25,11 +25,13 @@ router.post("/register", async (req, res) => {
   const client = await pool.connect();
 
   try {
-    await client.query("BEGIN"); // Start transaction
+    await client.query("BEGIN"); // Start transaction to enter in SQL Table
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const userResult = await client.query(
       "INSERT INTO users (username, password, role) VALUES ($1, $2, $3) RETURNING id",
+      /* We use $ to paramterize the queries, to seperate SQL code from data values. its to prevent attackers from injecting malicious code
+      it will be treated as data and executed as part of the query */
       [username, hashedPassword, role]
     );
     const userId = userResult.rows[0].id;
@@ -57,7 +59,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// POST /login
+// Login as User
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -71,9 +73,8 @@ router.post("/login", async (req, res) => {
     if (rows.length > 0) {
       const user = rows[0];
       if (await bcrypt.compare(password, user.password)) {
-        // Generate token with user details including role
         const token = generateToken(user);
-        res.json({ token, userId: user.id, role: user.role }); // Optionally return more user info
+        res.json({ token, userId: user.id, role: user.role }); // return more info to check for user role (artist or venue)
       } else {
         res.status(401).send("Invalid credentials");
       }
@@ -112,7 +113,7 @@ router.get("/user/profile/:userId", async (req, res) => {
       );
       return res.json({ ...user, details: details.rows[0] });
     } else {
-      return res.json(user); // Just return basic user details if no specific role data
+      return res.json(user);
     }
   } catch (err) {
     console.error("Error fetching user profile:", err);
@@ -123,7 +124,7 @@ router.get("/user/profile/:userId", async (req, res) => {
 // Endpoint to post gigs (as venue)
 router.post("/gigs", authenticateVenue, async (req, res) => {
   const { title, description, date, pay, time } = req.body;
-  const userId = req.user.userId; // Ensure this is correctly fetching the user_id from the authenticated user
+  const userId = req.user.userId;
 
   if (!userId) {
     return res.status(400).send("User ID is missing from the request.");
@@ -154,10 +155,10 @@ router.post("/gigs", authenticateVenue, async (req, res) => {
 // Endpoint to delete gigs (as venue)
 router.delete("/gigs/:gigId", authenticateVenue, async (req, res) => {
   const { gigId } = req.params;
-  const userId = req.user.userId; // Assuming authenticateVenue attaches the user details to req.user
+  const userId = req.user.userId;
 
   try {
-    // First, verify that the logged-in venue is the owner of the gig
+    // verify that the logged-in venue is the owner of the gig
     const ownershipCheck = await pool.query(
       "SELECT user_id FROM gigs WHERE id = $1",
       [gigId]
@@ -203,7 +204,7 @@ router.get("/user/profile/:userId/gigs", async (req, res) => {
     const result = await pool.query("SELECT * FROM gigs WHERE user_id = $1", [
       userId,
     ]);
-    // Return an empty array with a 200 status code if no gigs are found
+
     if (result.rows.length === 0) {
       return res.status(200).json([]);
     }
@@ -220,10 +221,10 @@ router.post(
   authenticateVenue,
   async (req, res) => {
     const { gigId, artistId } = req.params;
-    const userId = req.user.userId; // Assuming authenticateVenue attaches the user details to req.user
+    const userId = req.user.userId;
 
     try {
-      // First, fetch the band_name of the artist who is being offered the gig
+      // fetch the band_name of the artist who is being offered the gig
       const { rows: artistDetails } = await pool.query(
         "SELECT band_name FROM artist_details WHERE user_id = $1",
         [artistId]
@@ -247,7 +248,7 @@ router.post(
           .send("You can only offer gigs that you have created.");
       }
 
-      // Then, update the gig's offered_to column with the band_name
+      // update the gig's offered_to column with the band_name
       const updateResult = await pool.query(
         "UPDATE gigs SET offered_to = $1 WHERE id = $2 AND offered_to IS NULL",
         [bandName, gigId]
@@ -273,7 +274,7 @@ router.post(
   authenticateVenue,
   async (req, res) => {
     const { gigId, artistId } = req.params;
-    const userId = req.user.userId; // Assuming authenticateVenue attaches the user details to req.user
+    const userId = req.user.userId;
 
     try {
       // Check if the gig belongs to the venue making the retract request
@@ -317,7 +318,7 @@ router.get("/artists", async (req, res) => {
     const result = await pool.query(
       "SELECT user_id, band_name, genre, bio FROM artist_details"
     );
-    // The result will now include both user_id and band_name for each artist
+    // include both user_id and band_name for each artist
     res.json(result.rows);
   } catch (error) {
     console.error("Failed to retrieve artists:", error);
@@ -332,7 +333,7 @@ router.get("/venues", async (req, res) => {
     const result = await pool.query(
       "SELECT user_id, venue_name, address, bio FROM venue_details"
     );
-    // The result will now include both user_id and band_name for each artist
+
     res.json(result.rows);
   } catch (error) {
     console.error("Failed to retrieve venues:", error);
@@ -346,7 +347,7 @@ router.get("/gigs/offered", authenticateArtist, async (req, res) => {
     // Extract the user's ID from the request object
     const userId = req.user.userId;
 
-    // Query to select gigs where the offered_to column matches the artist's band name
+    // select gigs where the offered_to column matches the artist's band name
     const result = await pool.query(
       "SELECT * FROM gigs WHERE offered_to = (SELECT band_name FROM artist_details WHERE user_id = $1)",
       [userId]
@@ -361,7 +362,7 @@ router.get("/gigs/offered", authenticateArtist, async (req, res) => {
 // Accept Gigs as an Artist
 router.post("/gigs/accept/:gigId", authenticateArtist, async (req, res) => {
   const { gigId } = req.params;
-  const userId = req.user.userId; // Assuming authenticateArtist attaches the user details to req.user
+  const userId = req.user.userId;
 
   try {
     // Fetch the artist's band name
@@ -398,7 +399,7 @@ router.post("/gigs/accept/:gigId", authenticateArtist, async (req, res) => {
 // Reject Offer as Artist
 router.post("/gigs/reject/:gigId", authenticateArtist, async (req, res) => {
   const { gigId } = req.params;
-  const userId = req.user.userId; // Assuming authenticateArtist attaches the user details to req.user
+  const userId = req.user.userId;
 
   try {
     // Check if the gig is offered to the artist making the rejection request
@@ -440,7 +441,7 @@ router.post(
   authenticateArtist,
   async (req, res) => {
     const { reviewee_id, content } = req.body;
-    const reviewer_id = req.user.userId; // Assuming authenticateArtist attaches the user details to req.user
+    const reviewer_id = req.user.userId;
 
     // Validate input
     if (!reviewee_id || !content) {
@@ -448,7 +449,6 @@ router.post(
     }
 
     try {
-      // Insert the review into the database
       const query = `
        INSERT INTO reviews (reviewer_id, reviewee_id, content)
        VALUES ($1, $2, $3)
@@ -471,7 +471,7 @@ router.post(
 // Write Review (Venue to Artist)
 router.post("/reviews/venue-to-artist", authenticateVenue, async (req, res) => {
   const { reviewee_id, content } = req.body;
-  const reviewer_id = req.user.userId; // Assuming authenticateVenue attaches the user details to req.user
+  const reviewer_id = req.user.userId;
 
   // Validate input
   if (!reviewee_id || !content) {
@@ -504,7 +504,7 @@ router.get("/reviews/:userId", async (req, res) => {
       "SELECT * FROM reviews WHERE reviewee_id = $1",
       [userId]
     );
-    // Return an empty array with a 200 status code if no reviews are found
+
     if (result.rows.length === 0) {
       return res.status(200).json([]);
     }
@@ -568,7 +568,7 @@ router.get("/messages/:senderId/:recipientId", async (req, res) => {
 // Edit Gigs as Venue
 router.put("/gigs/:gigId", authenticateVenue, async (req, res) => {
   const { gigId } = req.params;
-  const userId = req.user.userId; // Assuming authenticateVenue attaches the user details to req.user
+  const userId = req.user.userId;
   const { title, description, date, pay, time } = req.body;
 
   try {
@@ -595,6 +595,9 @@ router.put("/gigs/:gigId", authenticateVenue, async (req, res) => {
        WHERE id = $6
        RETURNING *;
      `;
+
+    // COALESCE is a function in SQL that returns the first non-null expression among its arguments.
+    // It's commonly used to provide a default value when dealing with null values in SQL queries
 
     const result = await pool.query(updateQuery, [
       title,
