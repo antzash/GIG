@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Ensure useNavigate is imported
 import { useUser } from "../Context/UserContext";
 import gigLogo from "../gig-logo.png";
 
 function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Initialize navigate function
   const { updateUser } = useUser(); // Use the updateUser function from UserContext
 
   const handleSubmit = async (event) => {
@@ -22,8 +22,8 @@ function LoginForm() {
         console.log("Login successful", data);
         // Update the user state with the userId and token
         updateUser({ userId: data.userId, token: data.token });
-        // Redirect to the profile page
-        navigate("/");
+        // Redirect to the homepage or desired page after successful login
+        navigate("/home"); // Adjust the path as needed
       } else {
         console.error("Failed to login");
       }

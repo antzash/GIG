@@ -1,8 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import LoginForm from "./Components/Login";
-import RegistrationForm from "./Components/Registration";
-import ProfilePage from "./Pages/Profile";
+import LoginPage from "./Pages/LoginPage";
+import ProfilePage from "./Pages/ProfilePage";
 import HomePage from "./Pages/Homepage"; // Import the HomePage component
 import { UserProvider } from "./Context/UserContext";
 import "./tailwind.css";
@@ -15,10 +14,11 @@ function App() {
       <UserProvider>
         <Router>
           <Routes>
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/register" element={<RegistrationForm />} />
+            <Route path="/" element={<LoginPage />} />{" "}
+            {/* Set LoginPage as the default route */}
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/" element={<HomePage />} />{" "}
+            <Route path="/home" element={<HomePage />} />{" "}
+            {/* Adjusted HomePage route */}
             <Route path="/user/:userId" element={<UserPage />} />
             <Route path="/chat" element={<Chat />} />
           </Routes>

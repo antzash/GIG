@@ -10,7 +10,7 @@ function Header() {
 
   const handleLogout = () => {
     logoutUser(); // Call the logoutUser function from UserContext
-    navigate("/login"); // Navigate to the login page
+    navigate("/"); // Navigate to the login page
   };
 
   return (
