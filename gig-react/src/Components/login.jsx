@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useUser } from "../Context/UserContext"; // Import useUser hook
-import gigLogo from "../gig-logo.png"; // Adjust the path as necessary
+import { useUser } from "../Context/UserContext";
+s;
+import gigLogo from "../gig-logo.png";
 
 function LoginForm() {
   const [username, setUsername] = useState("");
