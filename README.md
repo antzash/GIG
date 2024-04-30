@@ -72,11 +72,3 @@ npm run dev
 
 - Open your browser and navigate to `http://localhost:5001` to access the React frontend.
 - Use the provided forms to register, log in, and interact with the platform.
-
-## Contributing
-
-Contributions are welcome. Please open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the MIT License.
