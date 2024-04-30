@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import gigLogo from "../gig-logo.png"; // Adjust the path as necessary
+import gigLogo from "../gig-logo.png";
 
 function RegistrationForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("artist");
-  const [bandName, setBandName] = useState(""); // Specific to artists
-  const [genre, setGenre] = useState(""); // Specific to artists
-  const [artistBio, setArtistBio] = useState(""); // Specific to artists
-  const [venueName, setVenueName] = useState(""); // Specific to venues
-  const [address, setAddress] = useState(""); // Specific to venues
-  const [venueBio, setVenueBio] = useState(""); // Specific to venues
+  const [bandName, setBandName] = useState("");
+  const [genre, setGenre] = useState("");
+  const [artistBio, setArtistBio] = useState("");
+  const [venueName, setVenueName] = useState("");
+  const [address, setAddress] = useState("");
+  const [venueBio, setVenueBio] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -60,7 +60,7 @@ function RegistrationForm() {
           <h2 className="text-center font-bold font-avenir text-bold text-xl mb-5">
             Register
           </h2>
-          {/* Username and Password Fields */}
+
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -112,7 +112,7 @@ function RegistrationForm() {
               <option value="venue">Venue</option>
             </select>
           </div>
-          {/* Conditional Inputs Based on Role */}
+          {/* role based inputs */}
           {role === "artist" && (
             <>
               <div className="mb-4">
