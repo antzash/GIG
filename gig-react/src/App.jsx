@@ -21,7 +21,6 @@ function App() {
             <Route path="/" element={<HomePage />} />{" "}
             <Route path="/user/:userId" element={<UserPage />} />
             <Route path="/chat" element={<Chat />} />
-            {/* Set HomePage as the default route */}
           </Routes>
         </Router>
       </UserProvider>
