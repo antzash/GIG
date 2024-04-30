@@ -14,9 +14,9 @@ function Header() {
   };
 
   return (
-    <header className="text-black p-4 flex justify-between items-center mt-4">
+    <header className="text-black p-4 flex justify-between items-center mt-4 ">
       <Link to="/">
-        <img src={gigLogo} alt="Gig Logo" className="h-12" />
+        <img src={gigLogo} alt="Gig Logo" className="h-12 " />
       </Link>
 
       <div>
@@ -27,7 +27,7 @@ function Header() {
               {" "}
               <Link
                 to="/profile"
-                className="text-xl text-amber-500 mr-4 flex items-center"
+                className="text-xl text-amber-500 mr-4 flex items-center hover:scale-110 hover:shadow-lg"
               >
                 {" "}
                 <FaUser />
@@ -35,7 +35,7 @@ function Header() {
               </Link>
               <Link
                 to="/chat"
-                className="text-xl text-amber-500 mr-4 flex items-center"
+                className="text-xl text-amber-500 mr-4 flex items-center hover:scale-110 hover:shadow-lg"
               >
                 {" "}
                 <FaComments />
@@ -43,7 +43,7 @@ function Header() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="bg-amber-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-amber-500 hover:bg-red-700 hover:scale-110 hover:shadow-lg text-white font-bold py-2 px-4 rounded"
               >
                 Logout
               </button>
