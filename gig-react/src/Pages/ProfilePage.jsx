@@ -391,28 +391,35 @@ function ProfilePage() {
                 {gigs.map((gig) => (
                   <div
                     key={gig.id}
-                    className="bg-white shadow rounded-xl hover:scale-110 hover:shadow-lg p-4 w-full md:w-[800px] lg:w-[800px] h-[200px] border border-amber-400"
+                    className="bg-white shadow rounded-xl  p-4 w-full md:w-[800px] lg:w-[800px] h-[200px] border border-amber-400"
                   >
                     <div className="flex flex-wrap">
                       <div className="w-full md:w-1/2">
-                        <h3 className="text-xl text-amber-500 font-bold mb-2">
+                        <h3 className="text-[30px] text-amber-500 font-bold mb-2">
                           {gig.title}
                         </h3>
-                        <p className="text-gray-700 font-light mb-2">
-                          {gig.description}
-                        </p>
-                        <p className="text-gray-500 mb-2 font-bold mt-6">
-                          Offered to:{" "}
-                          <span
-                            className={`${
-                              gig.offered_to ? "bg-amber-500" : "bg-red-500"
-                            } text-white rounded-xl p-2`}
-                          >
-                            {gig.offered_to
-                              ? gig.offered_to
-                              : "Not offered yet"}
-                          </span>
-                        </p>
+                        <p className="text-gray-700 mb-2">{gig.description}</p>
+                        {gig.accepted_by ? (
+                          <p className="text-gray-500 mb-2 font-bold mt-4">
+                            Accepted by:{" "}
+                            <span className="bg-green-500 p-2 rounded-xl text-white">
+                              {gig.accepted_by}
+                            </span>
+                          </p>
+                        ) : (
+                          <p className="text-gray-500 mb-2 font-bold mt-4">
+                            Offered by:{" "}
+                            <span
+                              className={`${
+                                gig.offered_to ? "bg-amber-500" : "bg-cyan-500"
+                              } text-white p-2 rounded-xl`}
+                            >
+                              {gig.offered_to
+                                ? gig.offered_to
+                                : "Not offered yet"}
+                            </span>
+                          </p>
+                        )}
                       </div>
                       <div className="w-full md:w-1/2 text-right">
                         <p className="text-black font-bold text-[15px] mb-2">
@@ -589,7 +596,7 @@ function ProfilePage() {
                         <p className="text-green-500 mb-2">${gig.pay}</p>
                         <div className="flex justify-end space-x-2">
                           {gig.accepted_by ? (
-                            <p className="text-white bg-amber-400 px-4 py-2 rounded font-bold">
+                            <p className="text-white bg-green-400 px-4 py-2 rounded font-bold">
                               Accepted
                             </p>
                           ) : (
