@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 
+// To check if logged in account, is a venue
 const authenticateVenue = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -22,6 +23,7 @@ const authenticateVenue = (req, res, next) => {
   }
 };
 
+// To check if logged in account is venue
 const authenticateArtist = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {

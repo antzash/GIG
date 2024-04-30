@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const { Pool } = require("pg");
-const { generateToken } = require("../auth"); // Import the generateToken function
+const { generateToken } = require("../auth");
 const router = express.Router();
 
 const pool = new Pool({
