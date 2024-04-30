@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import Header from "./Header";
-import { useUser } from "../Context/UserContext";
+import { useUser } from "../Context/UserContext"; // Get details of logged in user
 
 const socket = io("http://localhost:5001");
 
@@ -12,6 +12,7 @@ function Chat() {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
 
+  // Useffect to fetch users and set up socket connection and listen for new messages
   useEffect(() => {
     // Fetch users and set up socket connection
     fetch("http://localhost:5001/api/users")
@@ -31,13 +32,7 @@ function Chat() {
     };
   }, []);
 
-  useEffect(() => {
-    if (selectedUser) {
-      // Fetch messages when a user is selected
-      fetchMessages(user.userId, selectedUser.id);
-    }
-  }, [selectedUser, user.userId]);
-
+  // Var to fetch messages between logged in user and selected user
   const fetchMessages = async (senderId, recipientId) => {
     try {
       // Clear messages before fetching new ones
@@ -56,6 +51,15 @@ function Chat() {
     }
   };
 
+  // Fetch messages of selected user
+  useEffect(() => {
+    if (selectedUser) {
+      // Fetch messages when a user is selected
+      fetchMessages(user.userId, selectedUser.id);
+    }
+  }, [selectedUser, user.userId]);
+
+  // Send messages between two users and store in Db
   const sendMessage = async (e) => {
     e.preventDefault();
     if (message && selectedUser) {
