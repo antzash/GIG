@@ -27,7 +27,7 @@ function Header() {
               {" "}
               <Link
                 to="/profile"
-                className="text-xl text-amber-400 mr-4 flex items-center"
+                className="text-xl text-amber-500 mr-4 flex items-center"
               >
                 {" "}
                 <FaUser />
@@ -35,7 +35,7 @@ function Header() {
               </Link>
               <Link
                 to="/chat"
-                className="text-xl text-amber-400 mr-4 flex items-center"
+                className="text-xl text-amber-500 mr-4 flex items-center"
               >
                 {" "}
                 <FaComments />
@@ -43,7 +43,7 @@ function Header() {
               </Link>
               <button
                 onClick={handleLogout}
-                className="bg-amber-400 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-amber-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
               >
                 Logout
               </button>

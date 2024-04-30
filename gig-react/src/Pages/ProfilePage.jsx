@@ -353,7 +353,7 @@ function ProfilePage() {
               <p className="text-lg text-gray-700 mb-2">
                 {profileDetails.details?.address}
               </p>
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              <button className="bg-amber-500 hover:bg-cyan-700 hover:scale-110 hover:shadow-lg text-white font-bold py-2 px-4 rounded transition-transform duration-200">
                 Visit Website
               </button>
               <p className="text-gray-700 mt-4">
@@ -364,9 +364,9 @@ function ProfilePage() {
             {/* Tabs */}
             <div className="flex justify-center mt-4">
               <button
-                className={`px-4 py-2 mr-2 mb-5 ${
+                className={`px-4 py-2 mr-2 mb-5 hover:scale-110 hover:shadow-lg ${
                   selectedTab === "yourGigs"
-                    ? "bg-amber-400 text-white font-bold"
+                    ? "bg-amber-500 text-white font-bold"
                     : "bg-gray-200 text-gray-700"
                 }`}
                 onClick={() => setSelectedTab("yourGigs")}
@@ -374,9 +374,9 @@ function ProfilePage() {
                 Your Gigs
               </button>
               <button
-                className={`px-4 py-2 mr-2 mb-5 ${
+                className={`px-4 py-2 mr-2 mb-5 hover:scale-110 hover:shadow-lg ${
                   selectedTab === "reviews"
-                    ? "bg-amber-400 text-white font-bold"
+                    ? "bg-amber-500 text-white font-bold"
                     : "bg-gray-200 text-gray-700"
                 }`}
                 onClick={() => setSelectedTab("reviews")}
@@ -512,7 +512,7 @@ function ProfilePage() {
               <p className="text-lg text-gray-700 mb-2">
                 {profileDetails.details?.genre}
               </p>
-              <button className="bg-amber-400 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded">
+              <button className="bg-amber-500 hover:bg-cyan-700 hover:scale-110 hover:shadow-lg text-white font-bold py-2 px-4 rounded transition-transform duration-200">
                 Visit Website
               </button>
               <p className="text-gray-700 mt-4">
@@ -523,19 +523,19 @@ function ProfilePage() {
             {/* Tabs */}
             <div className="flex justify-center mt-4">
               <button
-                className={`px-4 py-2 mr-2 mb-5 ${
+                className={`px-4 py-2 mr-2 mb-5 hover:scale-110 hover:shadow-lg ${
                   selectedTab === "yourGigs"
-                    ? "bg-amber-400 text-white font-bold"
+                    ? "bg-amber-500 text-white font-bold"
                     : "bg-gray-200 text-gray-700"
                 }`}
                 onClick={() => setSelectedTab("yourGigs")}
               >
-                Your Gigss
+                Your Gigs
               </button>
               <button
-                className={`px-4 py-2 mb-5 ${
+                className={`px-4 py-2 mb-5 hover:scale-110 hover:shadow-lg ${
                   selectedTab === "reviews"
-                    ? "bg-amber-400 text-white font-bold"
+                    ? "bg-amber-500 text-white font-bold"
                     : "bg-gray-200 text-gray-700"
                 }`}
                 onClick={() => setSelectedTab("reviews")}
