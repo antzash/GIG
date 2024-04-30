@@ -27,7 +27,6 @@ const HomePage = () => {
     fetchGigs();
   }, []);
 
-  // Sorting logic for date
   useEffect(() => {
     const sortedGigs = [...gigs].sort((a, b) => {
       const dateA = new Date(a.date);

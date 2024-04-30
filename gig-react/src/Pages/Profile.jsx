@@ -5,7 +5,6 @@ import Header from "../Components/Header";
 
 function ProfilePage() {
   const { user } = useUser();
-  const navigate = useNavigate();
   const [gigs, setGigs] = useState([]);
   const [artists, setArtists] = useState([]);
   const [selectedArtist, setSelectedArtist] = useState({});
@@ -59,6 +58,7 @@ function ProfilePage() {
           if (!reviewerResponse.ok) {
             throw new Error("Failed to fetch reviewer details");
           }
+          // Check for reviewer's band or venue name
           const reviewerDetails = await reviewerResponse.json();
           review.reviewerName =
             reviewerDetails.details?.band_name ||
@@ -225,7 +225,6 @@ function ProfilePage() {
       );
       if (response.ok) {
         console.log("Offer retracted successfully");
-        // Optionally, update the local state to reflect the change immediately
       } else {
         console.error("Failed to retract offer");
       }
@@ -245,7 +244,7 @@ function ProfilePage() {
       });
       if (response.ok) {
         console.log("Gig deleted successfully");
-        // Optionally, remove the gig from the local state to reflect the change immediately
+
         setGigs(gigs.filter((gig) => gig.id !== gigId));
       } else {
         console.error("Failed to delete gig");
@@ -269,7 +268,7 @@ function ProfilePage() {
       );
       if (response.ok) {
         console.log("Gig accepted successfully");
-        // Optionally, re-fetch the gigs list to update the UI
+
         fetchOfferedGigs();
       } else {
         console.error("Failed to accept gig");
@@ -293,7 +292,7 @@ function ProfilePage() {
       );
       if (response.ok) {
         console.log("Offer rejected successfully");
-        // Optionally, re-fetch the gigs list to update the UI
+
         fetchOfferedGigs();
       } else {
         console.error("Failed to reject offer");
@@ -335,7 +334,6 @@ function ProfilePage() {
 
       // Close the modal and refresh the gigs list
       setIsModalOpen(false);
-      // Optionally, refresh the gigs list to reflect the changes
     } catch (error) {
       console.error("Error updating gig:", error);
     }
