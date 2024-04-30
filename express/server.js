@@ -16,7 +16,7 @@ app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5001", // Adjust this to your client's origin for security
+    origin: "http://localhost:5001",
     methods: ["GET", "POST"],
   },
 });
@@ -40,7 +40,7 @@ io.on("connection", (socket) => {
 
 const { Pool } = require("pg");
 const pool = new Pool({
-  connectionString: "postgres://antzash:0420@localhost:5432/gigbase",
+  connectionString: process.env.DATABASE_URL,
 });
 
 // Import auth router
