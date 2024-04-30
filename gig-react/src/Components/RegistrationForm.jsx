@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import gigLogo from "../gig-logo.png";
 
 function RegistrationForm() {
@@ -12,6 +12,7 @@ function RegistrationForm() {
   const [venueName, setVenueName] = useState("");
   const [address, setAddress] = useState("");
   const [venueBio, setVenueBio] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -39,6 +40,7 @@ function RegistrationForm() {
         console.log("Sending registration data:", userDetails);
 
         window.alert("Your account has been successfully created.");
+        navigate("/");
       } else {
         console.error("Failed to register");
       }

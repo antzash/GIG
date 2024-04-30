@@ -1,12 +1,15 @@
+// src/Pages/LoginPage.jsx
 import React from "react";
-import LoginForm from "../Components/Login";
-import RegistrationForm from "../Components/Registration";
+import LoginForm from "../Components/LoginForm";
+import { Link } from "react-router-dom";
 
 function LoginPage() {
   return (
     <div>
       <LoginForm />
-      <RegistrationForm />
+      <div>
+        <Link to="/register">Not registered? Create your account here</Link>
+      </div>
     </div>
   );
 }
