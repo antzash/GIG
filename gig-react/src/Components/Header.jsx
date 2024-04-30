@@ -1,8 +1,8 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../Context/UserContext";
-import gigLogo from "../gig-logo.png"; // Adjust the path as necessary
-import { FaUser, FaComments } from "react-icons/fa"; // Import the icons
+import gigLogo from "../gig-logo.png";
+import { FaUser, FaComments } from "react-icons/fa";
 
 function Header() {
   const { user, logoutUser } = useUser();
