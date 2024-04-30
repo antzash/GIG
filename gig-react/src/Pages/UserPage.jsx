@@ -107,7 +107,7 @@ function UserPage() {
         throw new Error("Failed to submit review");
       }
       // Refresh reviews after submitting a new review
-      fetchReviews(); // Now fetchReviews is accessible here
+      fetchReviews();
       setShowReviewForm(false); // Hide the review form after submission
     } catch (error) {
       console.error("Error submitting review:", error);
@@ -148,25 +148,23 @@ function UserPage() {
 
         {activeTab === "reviews" && (
           <div className="grid grid-cols-1 gap-4">
-            {reviews.map((review) => (
-              <div className="grid grid-cols-1 gap-4">
-                {reviews.map((review) => (
-                  <div
-                    key={review.id}
-                    className="bg-white border border-amber-400 shadow-md rounded px-8 pt-6 pb-8 mb-4"
-                  >
-                    <div className="mb-4">
-                      <p className="text-gray-700 text-base">
-                        <strong>“{review.content}”</strong>
-                      </p>
-                      <p className="text-gray-500 text-sm">
-                        - {review.reviewerName}
-                      </p>
-                    </div>
+            <div className="grid grid-cols-1 gap-4">
+              {reviews.map((review) => (
+                <div
+                  key={review.id}
+                  className="bg-white border border-amber-400 shadow-md rounded px-8 pt-6 pb-8 mb-4"
+                >
+                  <div className="mb-4">
+                    <p className="text-gray-700 text-base">
+                      <strong>“{review.content}”</strong>
+                    </p>
+                    <p className="text-gray-500 text-sm">
+                      - {review.reviewerName}
+                    </p>
                   </div>
-                ))}
-              </div>
-            ))}
+                </div>
+              ))}
+            </div>
             {showReviewForm && (
               <form onSubmit={handleReviewSubmit}>
                 <textarea
@@ -177,7 +175,7 @@ function UserPage() {
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white"
+                  className="px-4 py-2 bg-amber-500 text-white hover:scale-110 hover:shadow-lg rounded-xl"
                 >
                   Submit Review
                 </button>
