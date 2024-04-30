@@ -126,7 +126,7 @@ function UserPage() {
           <p className="text-lg text-gray-700 mb-2">
             {profileDetails.details?.address}
           </p>
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <button className="bg-amber-500 hover:bg-green-700 hover:scale-110 hover:shadow-lg text-white font-bold py-2 px-4 rounded">
             Visit Website
           </button>
           <p className="text-gray-700 mt-4">{profileDetails.details?.bio}</p>
@@ -135,23 +135,17 @@ function UserPage() {
         <div className="flex justify-center mt-4 mb-8">
           <button
             className={`px-4 py-2 mx-2 ${
-              activeTab === "gigs" ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}
-            onClick={() => setActiveTab("gigs")}
-          >
-            Gigs
-          </button>
-          <button
-            className={`px-4 py-2 mx-2 ${
-              activeTab === "reviews" ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}
+              activeTab === "reviews"
+                ? "bg-amber-500 text-white"
+                : "bg-gray-200"
+            } hover:scale-110 hover:shadow-lg`}
             onClick={() => setActiveTab("reviews")}
           >
             Reviews
           </button>
         </div>
         {/* Content based on active tab */}
-        {activeTab === "gigs" && <div>Content for Gallery</div>}
+
         {activeTab === "reviews" && (
           <div className="grid grid-cols-1 gap-4">
             {reviews.map((review) => (
