@@ -15,7 +15,7 @@ function Header() {
 
   return (
     <header className="text-black p-4 flex justify-between items-center mt-4 ">
-      <Link to="/">
+      <Link to="/home">
         <img src={gigLogo} alt="Gig Logo" className="h-12 " />
       </Link>
 
