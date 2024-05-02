@@ -11,7 +11,7 @@ function Chat() {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-  const loggedInUserId = user.userId; // Assuming the user object has a userId property
+  const loggedInUserId = user.userId;
 
   // Useffect to fetch users and set up socket connection and listen for new messages
   useEffect(() => {
@@ -29,7 +29,7 @@ function Chat() {
     });
 
     return () => {
-      socket.disconnect();
+      socket.off("chat message");
     };
   }, []);
 
