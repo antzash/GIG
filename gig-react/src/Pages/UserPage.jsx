@@ -11,6 +11,7 @@ function UserPage() {
   const [reviews, setReviews] = useState([]);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewContent, setReviewContent] = useState("");
+  const [gigs, setGigs] = useState([]);
 
   const fetchReviews = async () => {
     try {
@@ -79,8 +80,31 @@ function UserPage() {
       }
     };
 
+    const fetchGigs = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5001/api/user/profile/${userId}/gigs`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch gigs");
+        }
+        const gigsData = await response.json();
+        setGigs(gigsData);
+      } catch (error) {
+        console.error("Error fetching gigs:", error);
+      }
+    };
+
     fetchProfileDetails();
     fetchReviews();
+    fetchGigs();
   }, [userId, user.token]);
 
   const handleReviewSubmit = async (e) => {
@@ -143,52 +167,72 @@ function UserPage() {
           >
             Reviews
           </button>
+          <button
+            className={`px-4 py-2 mx-2 ${
+              activeTab === "gigs" ? "bg-amber-500 text-white" : "bg-gray-200"
+            } hover:scale-110 hover:shadow-lg`}
+            onClick={() => setActiveTab("gigs")}
+          >
+            Gigs
+          </button>
         </div>
         {/* Content based on active tab */}
-
         {activeTab === "reviews" && (
           <div className="grid grid-cols-1 gap-4">
-            <div className="grid grid-cols-1 gap-4">
-              {reviews.map((review) => (
-                <div
-                  key={review.id}
-                  className="bg-white border border-amber-400 shadow-md rounded px-8 pt-6 pb-8 mb-4"
-                >
-                  <div className="mb-4">
-                    <p className="text-gray-700 text-base">
-                      <strong>“{review.content}”</strong>
-                    </p>
-                    <p className="text-gray-500 text-sm">
-                      - {review.reviewerName}
-                    </p>
-                  </div>
+            {reviews.map((review) => (
+              <div
+                key={review.id}
+                className="bg-white border border-amber-400 shadow-md rounded px-8 pt-6 pb-8 mb-4"
+              >
+                <div className="mb-4">
+                  <p className="text-gray-700 text-base">
+                    <strong>“{review.content}”</strong>
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    - {review.reviewerName}
+                  </p>
                 </div>
-              ))}
-            </div>
-            {showReviewForm && (
-              <form onSubmit={handleReviewSubmit}>
-                <textarea
-                  value={reviewContent}
-                  onChange={(e) => setReviewContent(e.target.value)}
-                  placeholder="Write your review here..."
-                  className="w-full p-2 mb-2"
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-amber-500 text-white hover:scale-110 hover:shadow-lg rounded-xl"
-                >
-                  Submit Review
-                </button>
-              </form>
-            )}
-            <button
-              onClick={() => setShowReviewForm(!showReviewForm)}
-              className="px-4 py-2 mt-4 bg-gray-200"
-            >
-              {showReviewForm ? "Cancel" : "Write a Review"}
-            </button>
+              </div>
+            ))}
           </div>
         )}
+        {activeTab === "gigs" && (
+          <div className="grid grid-cols-1 gap-4">
+            {gigs.map((gig) => (
+              <div
+                key={gig.id}
+                className="bg-white border border-amber-400 shadow-md rounded px-8 pt-6 pb-8 mb-4"
+              >
+                <h3 className="text-xl font-bold mb-2">{gig.title}</h3>
+                <p className="text-gray-700 text-base">{gig.description}</p>
+                <p className="text-gray-500 text-sm">{gig.date}</p>
+                <p className="text-gray-500 text-sm">{gig.venue_name}</p>
+              </div>
+            ))}
+          </div>
+        )}
+        {showReviewForm && (
+          <form onSubmit={handleReviewSubmit}>
+            <textarea
+              value={reviewContent}
+              onChange={(e) => setReviewContent(e.target.value)}
+              placeholder="Write your review here..."
+              className="w-full p-2 mb-2"
+            />
+            <button
+              type="submit"
+              className="px-4 py-2 bg-amber-500 text-white hover:scale-110 hover:shadow-lg rounded-xl"
+            >
+              Submit Review
+            </button>
+          </form>
+        )}
+        <button
+          onClick={() => setShowReviewForm(!showReviewForm)}
+          className="px-4 py-2 mt-4 bg-gray-200"
+        >
+          {showReviewForm ? "Cancel" : "Write a Review"}
+        </button>
       </div>
     </div>
   );
