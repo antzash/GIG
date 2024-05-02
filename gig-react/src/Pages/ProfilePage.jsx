@@ -316,6 +316,13 @@ function ProfilePage() {
 
   const handleEditGig = async () => {
     try {
+      if (
+        selectedGig.description.length < 20 ||
+        selectedGig.description.length > 150
+      ) {
+        window.alert("Gig description must be between 20 and 150 characters.");
+        return;
+      }
       const response = await fetch(
         `http://localhost:5001/api/gigs/${selectedGig.id}`,
         {

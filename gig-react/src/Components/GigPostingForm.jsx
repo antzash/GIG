@@ -13,6 +13,11 @@ function GigPostingForm() {
   // Submit Gig function
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (description.length < 20 || description.length > 150) {
+      window.alert("Gig description must be between 20 and 150 characters.");
+      return; // Prevent form submission
+    }
     try {
       const response = await fetch("http://localhost:5001/api/gigs", {
         method: "POST",

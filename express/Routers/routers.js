@@ -130,6 +130,14 @@ router.post("/gigs", authenticateVenue, async (req, res) => {
     return res.status(400).send("User ID is missing from the request.");
   }
 
+  if (description.length < 20 || description.length > 150) {
+    return res
+      .status(400)
+      .json({
+        error: "Gig description must be between 20 and 150 characters.",
+      });
+  }
+
   try {
     const query = `
       INSERT INTO gigs (user_id, venue_name, title, description, date, pay, time)
@@ -570,6 +578,12 @@ router.put("/gigs/:gigId", authenticateVenue, async (req, res) => {
   const { gigId } = req.params;
   const userId = req.user.userId;
   const { title, description, date, pay, time } = req.body;
+
+  if (description && (description.length < 20 || description.length > 150)) {
+    return res.status(400).json({
+      error: "Gig description must be between 20 and 150 characters.",
+    });
+  }
 
   try {
     // Verify that the gig belongs to the venue
