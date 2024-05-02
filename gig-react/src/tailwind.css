@@ -1,3 +1,11 @@
+/* tailwind.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Apply Avenir font globally */
+@layer base {
+  body {
+    @apply font-avenir;
+  }
+}
