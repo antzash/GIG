@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useUser } from "../Context/UserContext";
 import Header from "../Components/Header";
+import { useNavigate } from "react-router-dom";
 
 function UserPage() {
   const { userId } = useParams();
@@ -12,6 +13,7 @@ function UserPage() {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewContent, setReviewContent] = useState("");
   const [gigs, setGigs] = useState([]);
+  const navigate = useNavigate();
 
   const fetchReviews = async () => {
     try {
@@ -138,6 +140,18 @@ function UserPage() {
     }
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  const formatTime = (timeString) => {
+    const date = new Date(`1970-01-01T${timeString}`);
+    const options = { hour: "2-digit", minute: "2-digit", hour12: true };
+    return date.toLocaleTimeString("en-US", options);
+  };
+
   return (
     <div>
       <Header />
@@ -201,17 +215,53 @@ function UserPage() {
             {gigs.map((gig) => (
               <div
                 key={gig.id}
-                className="bg-white border border-amber-400 shadow-md rounded px-8 pt-6 pb-8 mb-4"
+                className="bg-white rounded-[30px] shadow-xl p-4 w-full md:w-[800px] lg:w-[800px] h-[250px] border border-amber-400"
               >
-                <h3 className="text-xl font-bold mb-2">{gig.title}</h3>
-                <p className="text-gray-700 text-base">{gig.description}</p>
-                <p className="text-gray-500 text-sm">{gig.date}</p>
-                <p className="text-gray-500 text-sm">{gig.venue_name}</p>
+                <div className="flex flex-wrap">
+                  <div className="w-full md:w-1/2">
+                    <h2 className="text-[30px] text-amber-500 font-bold mb-2">
+                      {gig.title}
+                    </h2>
+                    <p className="text-gray-700 mb-2">{gig.description}</p>
+                    <p className="text-black-500 font-bold text-[20px] mb-4 mt-4">
+                      at{" "}
+                      <span className="text-amber-500 text-[20px]">
+                        {gig.venue_name}
+                      </span>
+                    </p>
+                    {gig.accepted_by ? (
+                      <p className="inline-block text-amber-500 bg-black rounded-xl p-2 font-bold text-[15px] mb-2">
+                        Accepted by {gig.accepted_by}
+                      </p>
+                    ) : (
+                      <p className="inline-block text-white bg-green-500 rounded-xl p-2 font-bold text-[15px] mb-2">
+                        Open
+                      </p>
+                    )}
+                  </div>
+                  <div className="w-full md:w-1/2 text-right">
+                    <p className="text-amber-500 text-[25px] mb-2">
+                      {formatDate(gig.date)}
+                    </p>
+                    <p className="text-gray-500 mb-2">{formatTime(gig.time)}</p>
+                    <p className="text-[20px] text-green-500 mb-2">
+                      ${gig.pay}
+                    </p>
+                    {user.role === "artist" && gig.accepted_by === null && (
+                      <button
+                        className="bg-amber-500 hover:bg-green-500 hover:scale-110 hover:shadow-lg text-white px-4 py-2 rounded"
+                        onClick={() => navigate(`/chat`)}
+                      >
+                        Message
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         )}
-        {showReviewForm && (
+        {activeTab === "reviews" && showReviewForm && (
           <form onSubmit={handleReviewSubmit}>
             <textarea
               value={reviewContent}
@@ -227,12 +277,14 @@ function UserPage() {
             </button>
           </form>
         )}
-        <button
-          onClick={() => setShowReviewForm(!showReviewForm)}
-          className="px-4 py-2 mt-4 bg-gray-200"
-        >
-          {showReviewForm ? "Cancel" : "Write a Review"}
-        </button>
+        {activeTab === "reviews" && (
+          <button
+            onClick={() => setShowReviewForm(!showReviewForm)}
+            className="px-4 py-2 mt-4 bg-gray-200"
+          >
+            {showReviewForm ? "Cancel" : "Write a Review"}
+          </button>
+        )}
       </div>
     </div>
   );
