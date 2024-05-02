@@ -74,7 +74,7 @@ const SideBar = () => {
             {artists.map((artist) => (
               <div
                 key={artist.user_id}
-                className="mb-4"
+                className="mb-4 p-2 bg-white hover:bg-amber-500 transition-colors duration-200 ease-in-out cursor-pointer rounded-xl"
                 onClick={() => navigate(`/user/${artist.user_id}`)}
               >
                 <h3 className="text-lg font-semibold">{artist.band_name}</h3>
@@ -87,7 +87,7 @@ const SideBar = () => {
             {venues.map((venue) => (
               <div
                 key={venue.user_id}
-                className="mb-4"
+                className="mb-4 p-2 bg-white hover:bg-amber-500 transition-colors duration-200 ease-in-out cursor-pointer rounded-xl"
                 onClick={() => navigate(`/user/${venue.user_id}`)}
               >
                 <h3 className="text-lg font-semibold">{venue.venue_name}</h3>
