@@ -5,7 +5,7 @@ const { generateToken } = require("../auth");
 const router = express.Router();
 
 const pool = new Pool({
-  connectionString: "postgres://antzash:0420@localhost:5432/gigbase",
+  connectionString: process.env.DATABASE_URL,
 });
 
 const {
@@ -31,7 +31,7 @@ router.post("/register", async (req, res) => {
     const userResult = await client.query(
       "INSERT INTO users (username, password, role) VALUES ($1, $2, $3) RETURNING id",
       /* We use $ to paramterize the queries, to seperate SQL code from data values. its to prevent attackers from injecting malicious code
-      it will be treated as data and executed as part of the query */
+      it will be treated as data and not executed as part of the query */
       [username, hashedPassword, role]
     );
     const userId = userResult.rows[0].id;
