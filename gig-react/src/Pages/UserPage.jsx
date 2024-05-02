@@ -13,6 +13,7 @@ function UserPage() {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewContent, setReviewContent] = useState("");
   const [gigs, setGigs] = useState([]);
+  const [acceptedGigs, setAcceptedGigs] = useState([]);
   const navigate = useNavigate();
 
   const fetchReviews = async () => {
@@ -104,9 +105,32 @@ function UserPage() {
       }
     };
 
+    const fetchAcceptedGigs = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5001/api/gigs/accepted/${userId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch accepted gigs");
+        }
+        const acceptedGigsData = await response.json();
+        setAcceptedGigs(acceptedGigsData);
+      } catch (error) {
+        console.error("Error fetching accepted gigs:", error);
+      }
+    };
+
     fetchProfileDetails();
     fetchReviews();
     fetchGigs();
+    fetchAcceptedGigs();
   }, [userId, user.token]);
 
   const handleReviewSubmit = async (e) => {
@@ -257,6 +281,31 @@ function UserPage() {
                     )}
                   </div>
                 </div>
+              </div>
+            ))}
+            {acceptedGigs.map((gig) => (
+              <div
+                key={gig.id}
+                className="bg-white rounded-[30px] shadow-xl p-4 w-full md:w-[800px] lg:w-[800px] h-[250px] border border-amber-400"
+              >
+                <h2 className="text-[30px] text-amber-500 font-bold mb-2">
+                  {gig.title}
+                </h2>
+                <p className="text-gray-700 mb-2">{gig.description}</p>
+                <p className="text-black-500 font-bold text-[20px] mb-4 mt-4">
+                  at{" "}
+                  <span className="text-amber-500 text-[20px]">
+                    {gig.venue_name}
+                  </span>
+                </p>
+                <p className="text-amber-500 text-[20px] mb-2">
+                  Accepted by {gig.accepted_by}
+                </p>
+                <p className="text-amber-500 text-[25px] mb-2">
+                  {formatDate(gig.date)}
+                </p>
+                <p className="text-gray-500 mb-2">{formatTime(gig.time)}</p>
+                <p className="text-[20px] text-green-500 mb-2">${gig.pay}</p>
               </div>
             ))}
           </div>

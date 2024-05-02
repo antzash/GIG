@@ -131,11 +131,9 @@ router.post("/gigs", authenticateVenue, async (req, res) => {
   }
 
   if (description.length < 20 || description.length > 150) {
-    return res
-      .status(400)
-      .json({
-        error: "Gig description must be between 20 and 150 characters.",
-      });
+    return res.status(400).json({
+      error: "Gig description must be between 20 and 150 characters.",
+    });
   }
 
   try {
@@ -363,6 +361,36 @@ router.get("/gigs/offered", authenticateArtist, async (req, res) => {
     res.json(result.rows);
   } catch (error) {
     console.error("Failed to retrieve offered gigs:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// Fetch accepted gigs of artist
+router.get("/gigs/accepted/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    // Fetch the artist's band name using the userId
+    const { rows: artistDetails } = await pool.query(
+      "SELECT band_name FROM artist_details WHERE user_id = $1",
+      [userId]
+    );
+
+    if (artistDetails.length === 0) {
+      return res.status(404).send("Artist not found.");
+    }
+
+    const band_name = artistDetails[0].band_name;
+
+    // Fetch gigs where the accepted_by column matches the artist's band name
+    const result = await pool.query(
+      "SELECT * FROM gigs WHERE accepted_by = $1",
+      [band_name]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching accepted gigs:", error);
     res.status(500).send("Internal Server Error");
   }
 });
