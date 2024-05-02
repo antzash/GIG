@@ -115,11 +115,11 @@ const HomePage = () => {
                         </span>
                       </p>
                       {gig.accepted_by ? (
-                        <p className="text-green-500 font-bold mb-2">
-                          Accepted By: {gig.accepted_by}
+                        <p className="inline-block text-amber-500 bg-black rounded-xl p-2 font-bold text-[15px] mb-2">
+                          Accepted by {gig.accepted_by}
                         </p>
                       ) : (
-                        <p className="text-green-500 text-[20px] font-bold mb-2">
+                        <p className="inline-block text-white bg-green-500 rounded-xl p-2 font-bold text-[15px] mb-2">
                           Open
                         </p>
                       )}
